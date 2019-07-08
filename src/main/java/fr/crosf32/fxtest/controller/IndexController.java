@@ -1,4 +1,4 @@
-package fr.crosf32.fxtest.controllers;
+package fr.crosf32.fxtest.controller;
 
 import fr.crosf32.fxtest.sudoku.Sudoku;
 import fr.crosf32.fxtest.sudoku.grid.Cell;

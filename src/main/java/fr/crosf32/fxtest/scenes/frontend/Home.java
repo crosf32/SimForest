@@ -1,6 +1,6 @@
 package fr.crosf32.fxtest.scenes.frontend;
 
-import fr.crosf32.fxtest.controllers.IndexController;
+import fr.crosf32.fxtest.controller.IndexController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
