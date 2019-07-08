@@ -1,0 +1,15 @@
+fr\crosf32\fxtest\Entry.class
+fr\crosf32\fxtest\storage\database\DatabaseHandler$ThrowingRunnable.class
+fr\crosf32\fxtest\security\HashHandler.class
+fr\crosf32\fxtest\security\BCrypt.class
+fr\crosf32\fxtest\entity\User.class
+fr\crosf32\fxtest\storage\database\DatabaseHandler.class
+fr\crosf32\fxtest\FxTest.class
+fr\crosf32\fxtest\sample\Main.class
+fr\crosf32\fxtest\storage\cache\DataObject.class
+fr\crosf32\fxtest\storage\database\DatabaseConnector.class
+fr\crosf32\fxtest\controllers\LoginController.class
+fr\crosf32\fxtest\storage\cache\UserCache.class
+fr\crosf32\fxtest\storage\database\DatabaseHandler$LegendThreadFactory.class
+fr\crosf32\fxtest\entity\Article.class
+fr\crosf32\fxtest\FxTest$1.class
