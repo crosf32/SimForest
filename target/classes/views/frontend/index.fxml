@@ -4,8 +4,6 @@
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -14,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="500" maxWidth="800" minHeight="500" minWidth="800" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.crosf32.fxtest.controllers.IndexController">
+<AnchorPane maxHeight="500" maxWidth="800" minHeight="500" minWidth="800" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.crosf32.fxtest.controller.IndexController">
    <children>
       <BorderPane prefHeight="500.0" prefWidth="800.0">
          <top>
@@ -25,10 +23,6 @@
                   <Label layoutX="583.0" layoutY="41.0" text="Parties gagnées : " textFill="WHITE" />
                   <Label fx:id="gamePlayed" layoutX="722.0" layoutY="14.0" text="0" textFill="WHITE" />
                   <Label fx:id="gameWon" layoutX="722.0" layoutY="41.0" text="0" textFill="WHITE" />
-                  <ImageView fitHeight="51.0" fitWidth="51.0" layoutX="31.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../images/user.png" />
-                     </image></ImageView>
                </children>
             </Pane>
          </top>
