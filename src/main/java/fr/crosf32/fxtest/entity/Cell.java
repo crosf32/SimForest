@@ -9,7 +9,8 @@ public class Cell {
         return state;
     }
 
-    public void setState(VegetalState state) {
+    public Cell setState(VegetalState state) {
         this.state = state;
+        return this;
     }
 }

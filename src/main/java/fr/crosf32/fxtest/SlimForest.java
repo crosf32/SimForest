@@ -1,20 +1,20 @@
 package fr.crosf32.fxtest;
 
-import fr.crosf32.fxtest.storage.database.DatabaseHandler;
+import fr.crosf32.fxtest.entity.Forest;
+import fr.crosf32.fxtest.handler.ForestBuilder;
+import fr.crosf32.fxtest.handler.ForestSimulator;
 
 public class SlimForest {
 
-    private static DatabaseHandler databaseHandler;
-
     public SlimForest() {
-        this.databaseHandler = new DatabaseHandler();
+        System.out.println("-- SimForest --");
 
-        System.out.println("start");
+        Forest f = new ForestBuilder().randomGeneration().get();
+
+        ForestSimulator forestSimulator = new ForestSimulator(f);
+
+        forestSimulator.displayForConsole();
 
    /*     new Thread(() -> javafx.application.Application.launch(Main.class)).start();*/
-    }
-
-    public static DatabaseHandler getDatabaseHandler() {
-        return databaseHandler;
     }
 }
