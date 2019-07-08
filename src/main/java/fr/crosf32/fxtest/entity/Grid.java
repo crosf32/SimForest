@@ -11,19 +11,18 @@ public class Grid {
         generateBySize(width, height);
     }
 
-
     Cell getCell(int row, int col) {
         return cells[row][col];
     }
 
-    void setCell(int row, int col, Cell c) {
-        this.cells[row][col] = c;
+    void setCell(Cell c) {
+        this.cells[c.getRow()][c.getCol()] = c;
     }
 
     private void generateBySize(int width, int height) {
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
-                setCell(x, y, new Cell());
+                setCell(new Cell(x, y));
             }
         }
     }

@@ -23,5 +23,9 @@ public class ForestSimulator {
         }
     }
 
+    public void setMaxTime(int maxTime) {
+        this.maxTime = maxTime;
+    }
+
     // TODO : Check executeSimulationAt utility
 }

@@ -13,6 +13,10 @@ public class SlimForest {
 
         ForestSimulator forestSimulator = new ForestSimulator(f);
 
+        forestSimulator.setMaxTime(4);
+
+        forestSimulator.launchSimulation(); // TODO : Do this x)
+
         forestSimulator.displayForConsole();
 
    /*     new Thread(() -> javafx.application.Application.launch(Main.class)).start();*/
