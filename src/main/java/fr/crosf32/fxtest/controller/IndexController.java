@@ -1,8 +1,5 @@
 package fr.crosf32.fxtest.controller;
 
-import fr.crosf32.fxtest.sudoku.Sudoku;
-import fr.crosf32.fxtest.sudoku.grid.Cell;
-import fr.crosf32.fxtest.sudoku.grid.Grid;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -40,12 +37,9 @@ public class IndexController {
     @FXML
     private GridPane gridPane;
 
-    private Sudoku sudoku;
-
     private int count;
 
-    public IndexController() {
-        this.sudoku = new Sudoku();
+    public IndexController(){
     }
 
     public void setTest(String test) {
@@ -68,91 +62,7 @@ public class IndexController {
     }
 
     public void loadGrid() {
-        gridPane.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK,
-                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY, new BorderWidths(2), Insets.EMPTY)));
-        double height = 44;
 
-        System.out.println(gridPane.getRowConstraints());
-        for(int r = 0; r < 9; r++) {
-            for(int c = 0; c < 9; c++) {
-                TextField label = new TextField();
-                label.setPrefHeight(height);
-                label.setMaxHeight(height);
-                label.setMinHeight(height);
-
-                label.setAlignment(Pos.CENTER);
-                label.setId("field-"+(r*9+c));
-                label.setStyle("-fx-background-color: rgba(255, 255, 255, 0); -fx-font-size: 20px");
-
-                if(r == 2 || r == 5) {
-                    label.setBorder(new Border(new BorderStroke(Color.RED, Color.BLACK, Color.RED, Color.RED,
-                            BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                            CornerRadii.EMPTY, new BorderWidths(2), Insets.EMPTY)));
-                }
-                if(c == 3 || c == 6) {
-                    if(r == 2 || r == 5) {
-                        label.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.RED, Color.RED,
-                                BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                                CornerRadii.EMPTY, new BorderWidths(2), Insets.EMPTY)));
-                    } else {
-                        label.setBorder(new Border(new BorderStroke(Color.BLACK, Color.BLACK, Color.RED, Color.RED,
-                                BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE, BorderStrokeStyle.NONE,
-                                CornerRadii.EMPTY, new BorderWidths(2), Insets.EMPTY)));
-                    }
-                }
-
-                label.textProperty().addListener((obs, oldText, newText) -> {
-                    if(!newText.matches("^([1-9]|\\d)$") && !newText.equalsIgnoreCase("")) {
-                        label.setText(oldText);
-                        label.setStyle("-fx-background-color: #df403a; -fx-font-size: 20px");
-                        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-
-                        Runnable task = () -> {
-                           label.setStyle("-fx-background-color: rgba(255, 255, 255, 0); -fx-font-size: 20px");
-                        };
-                        executor.schedule(task, 1, TimeUnit.SECONDS);
-                    }
-
-                    if(sudoku.isGrid()) {
-                        try {
-                            int row = GridPane.getRowIndex(label);
-                            int col = GridPane.getColumnIndex(label);
-                            if(newText.equalsIgnoreCase(String.valueOf(sudoku.getGrid().get().get().getCellAt(col, row).getValue()))) {
-                                System.out.println("Oue");
-                            } else {
-                                System.out.println("Non");
-                            }
-                        } catch(Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-                GridPane.setHalignment(label, HPos.CENTER);
-
-                GridPane.setConstraints(label, r, c);
-                gridPane.getChildren().addAll(label);
-            }
-        }
-
-        sudoku.getGrid().thenAccept((Optional<Grid> opt) -> {
-           if(opt.isPresent()) {
-               for(Cell c : opt.get().getCells()) {
-                   if(c.getValue() != 0) {
-                       set(c.getRow(), c.getColumn(), c.getValue());
-                   }
-               }
-               Timeline time = new Timeline();
-               time.setCycleCount(Timeline.INDEFINITE);
-               KeyFrame frame = new KeyFrame(Duration.seconds(1), (actionEvent -> {
-                   count++;
-                   timer.setText(getFormattedTime(count));
-               }));
-               time.getKeyFrames().add(frame);
-               time.playFromStart();
-           }
-        });
     }
 
     public void commitHoverEntered(MouseEvent actionEvent) {
@@ -175,14 +85,6 @@ public class IndexController {
                     && GridPane.getColumnIndex(node) == col)
                 return Optional.of(node);
         return Optional.empty();
-    }
-
-    public Sudoku getSudoku() {
-        return sudoku;
-    }
-
-    public void setSudoku(Sudoku sudoku) {
-        this.sudoku = sudoku;
     }
 
     private String getFormattedTime(int secs) {
