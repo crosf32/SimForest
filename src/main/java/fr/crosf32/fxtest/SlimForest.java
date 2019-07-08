@@ -1,16 +1,17 @@
 package fr.crosf32.fxtest;
 
 import fr.crosf32.fxtest.storage.database.DatabaseHandler;
-import fr.crosf32.fxtest.sample.Main;
 
-public class FxTest {
+public class SlimForest {
 
     private static DatabaseHandler databaseHandler;
 
-    public FxTest() {
+    public SlimForest() {
         this.databaseHandler = new DatabaseHandler();
 
-        new Thread(() -> javafx.application.Application.launch(Main.class)).start();
+        System.out.println("start");
+
+   /*     new Thread(() -> javafx.application.Application.launch(Main.class)).start();*/
     }
 
     public static DatabaseHandler getDatabaseHandler() {
