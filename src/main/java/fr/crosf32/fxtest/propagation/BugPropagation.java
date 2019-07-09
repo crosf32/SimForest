@@ -28,11 +28,13 @@ public class BugPropagation implements Propagable {
             c.setState(VegetalState.EMPTY);
         } else {
             if(infectedNeighbours >= 1 && c.getSpecificState() == SpecificState.NONE) {
-                int probability = c.getState().getRiskOfInfection();
+                int probability = c.getLastState().getRiskOfInfection();
 
                 int rand = new Random().nextInt(100);
 
+                System.out.println(rand + " prob " + probability);
                 if(rand <= probability) {
+                    System.out.println("infection");
                     c.setSpecificState(SpecificState.INFECTED);
                 }
             }

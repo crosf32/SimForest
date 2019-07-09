@@ -14,6 +14,7 @@ public class SlimForest {
         Forest f = new ForestBuilder()
             .setAt(2, 2, VegetalState.TREE)
             .setAt(2, 3, VegetalState.TREE)
+            .setAt(1, 2, VegetalState.YOUNG)
             .setAt(1, 3, VegetalState.TREE, SpecificState.INFECTED)
             .setAt(2, 4, VegetalState.TREE, SpecificState.FIRE)
             .get();
@@ -21,7 +22,7 @@ public class SlimForest {
         ForestSimulator forestSimulator = new ForestSimulator(f);
         forestSimulator.displayForConsole();
 
-        forestSimulator.setMaxTime(3)
+        forestSimulator.setMaxTime(15)
         .setDelay(0)
         .launchSimulation();
 
