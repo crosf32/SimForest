@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.crosf32.fxtest.controller.homePageController">
+   <children>
+      <ImageView fitHeight="800.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../../../../Pictures/fonds-ecran-foret-automne-8.jpg" />
+         </image>
+      </ImageView>
+      <Pane layoutX="235.0" layoutY="93.0" prefHeight="568.0" prefWidth="779.0" style="-fx-border-color: black; -fx-background-color: B0410A; -fx-opacity: .4;" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="235.0" AnchorPane.rightAnchor="266.0" AnchorPane.topAnchor="93.0" />
+      <Pane prefHeight="400.0" prefWidth="600.0" style="-fx-opacity: 50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Button fx:id="randomButton" layoutX="349.0" layoutY="180.0" mnemonicParsing="false" onAction="#random" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Aleatoire" />
+            <Button fx:id="importButton" layoutX="747.0" layoutY="180.0" mnemonicParsing="false" onAction="#importAction" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Importer" />
+            <Button fx:id="generatButton" layoutX="593.0" layoutY="524.0" mnemonicParsing="false" onAction="#generat" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Générer" />
+            <Label layoutX="320.0" layoutY="345.0" text="Nombre de colonnes" textFill="WHITE">
+               <font>
+                  <Font name="System Bold Italic" size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="718.0" layoutY="345.0" text="Nombre de lignes" textFill="WHITE">
+               <font>
+                  <Font name="System Bold Italic" size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="nbrCol" layoutX="328.0" layoutY="409.0" promptText="100" />
+            <TextField fx:id="nbrRox" layoutX="726.0" layoutY="409.0" promptText="100" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

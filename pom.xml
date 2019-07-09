@@ -5,9 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>groupId</groupId>
-    <artifactId>fxtest</artifactId>
+    <artifactId>ay-simforest</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>test</name>
 
     <dependencies>
         <dependency>
@@ -178,4 +177,5 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+
 </project>
