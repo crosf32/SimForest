@@ -39,9 +39,6 @@ public class IndexController {
 
     private int count;
 
-    public IndexController(){
-    }
-
     public void setTest(String test) {
         this.test.setText(test);
     }
@@ -62,7 +59,6 @@ public class IndexController {
     }
 
     public void loadGrid() {
-
     }
 
     public void commitHoverEntered(MouseEvent actionEvent) {
