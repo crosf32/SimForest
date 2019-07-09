@@ -42,6 +42,8 @@ public class Forest extends Grid<Vegetal> {
     }
 
     public Vegetal getCell(int row, int col) {
-        return super.getCell(row, col);
+        if(row < getWidth() && col < getHeight()) {
+            return super.getCell(row, col);
+        } else return null;
     }
 }

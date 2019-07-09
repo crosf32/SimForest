@@ -9,19 +9,19 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.crosf32.fxtest.controller.homePageController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.crosf32.fxtest.controller.HomeController">
    <children>
       <ImageView fitHeight="800.0" fitWidth="1280.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../../../../Pictures/fonds-ecran-foret-automne-8.jpg" />
+            <Image url="@../images/background.jpg" />
          </image>
       </ImageView>
       <Pane layoutX="235.0" layoutY="93.0" prefHeight="568.0" prefWidth="779.0" style="-fx-border-color: black; -fx-background-color: B0410A; -fx-opacity: .4;" AnchorPane.bottomAnchor="139.0" AnchorPane.leftAnchor="235.0" AnchorPane.rightAnchor="266.0" AnchorPane.topAnchor="93.0" />
       <Pane prefHeight="400.0" prefWidth="600.0" style="-fx-opacity: 50;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="randomButton" layoutX="349.0" layoutY="180.0" mnemonicParsing="false" onAction="#random" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Aleatoire" />
-            <Button fx:id="importButton" layoutX="747.0" layoutY="180.0" mnemonicParsing="false" onAction="#importAction" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Importer" />
-            <Button fx:id="generatButton" layoutX="593.0" layoutY="524.0" mnemonicParsing="false" onAction="#generat" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Générer" />
+            <Button fx:id="randomButton" layoutX="349.0" layoutY="180.0" mnemonicParsing="false" onAction="#randomButton" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Aleatoire" textFill="WHITE" />
+            <Button fx:id="importButton" layoutX="747.0" layoutY="180.0" mnemonicParsing="false" onAction="#importButton" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Importer" textFill="WHITE" />
+            <Button fx:id="generateButton" layoutX="593.0" layoutY="524.0" mnemonicParsing="false" onAction="#generateGrid" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Générer" textFill="WHITE" />
             <Label layoutX="320.0" layoutY="345.0" text="Nombre de colonnes" textFill="WHITE">
                <font>
                   <Font name="System Bold Italic" size="20.0" />
