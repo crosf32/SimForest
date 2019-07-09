@@ -1,5 +1,6 @@
 package fr.crosf32.fxtest.entity;
 
+import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 public class Forest extends Grid<Vegetal> {
@@ -12,7 +13,13 @@ public class Forest extends Grid<Vegetal> {
         for(int x = 0; x < getWidth(); x++) {
             String row = "";
             for(int y = 0; y < getHeight(); y++) {
-                row += getCell(x, y).getState().getDisplayNumber() + " ";
+                Vegetal veg = getCell(x, y);
+                if(veg.getSpecificState() != SpecificState.NONE) {
+                    row += veg.getSpecificState().getDisplayNumber() + " ";
+                } else {
+                    row += veg.getState().getDisplayNumber() + " ";
+                }
+
             }
             table += row + " \n";
         }
@@ -21,7 +28,11 @@ public class Forest extends Grid<Vegetal> {
     }
 
     public void setCell(int row, int col, VegetalState state) {
-        super.setCell(new Vegetal(row, col).setState(state));
+        super.setCell(new Vegetal(row, col).setState(state).setLastState(state));
+    }
+
+    public void setCell(int row, int col, VegetalState state, SpecificState specificState) {
+        super.setCell(new Vegetal(row, col).setState(state).setLastState(state).setSpecificState(specificState).setLastSpecificState(specificState));
     }
 
     public void calcNeibhours() {

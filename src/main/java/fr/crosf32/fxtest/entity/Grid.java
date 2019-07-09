@@ -1,7 +1,6 @@
 package fr.crosf32.fxtest.entity;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -59,13 +58,10 @@ public class Grid<T extends Cell> {
     }
 
     public Set<T> getAllNeighbours(T c) {
-        System.out.println("Cellule " + c.getRow() + " " + c.getCol());
         Set<T> cells = new HashSet<>();
 
         for(int x = (c.getRow() - 1); x <= (c.getRow() + 1); x++) {
-            System.out.println("--------------");
             for(int y = c.getCol()-1; y <= (c.getCol() + 1); y++) {
-                System.out.println("x " + x +" y " + y);
                 if((x == c.getRow() && y == c.getCol()) || x < 0 || y < 0 || x > (width-1) || y > (height-1)) {
                     continue;
                 }
@@ -74,17 +70,6 @@ public class Grid<T extends Cell> {
         }
 
         //cells.forEach(cell -> System.out.println("cell voisine : " + cell.getRow() + " " + cell.getCol() ));
-        return cells;
-    }
-
-    public Set<T> getDirectNeighbours(Cell c) {
-        Set<T> cells = new HashSet<>();
-
-        for(int i : Set.of(-1, 1)) {
-            cells.add(getCell((c.getRow()+i), c.getCol()));
-            cells.add(getCell(c.getRow(), (c.getCol()+i)));
-        }
-
         return cells;
     }
 

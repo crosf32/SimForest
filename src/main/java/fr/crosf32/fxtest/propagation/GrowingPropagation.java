@@ -21,7 +21,7 @@ public class GrowingPropagation implements Propagable {
         Set<Vegetal> neighbours = c.getNeighbours();
 
         int treesNeighbours = getNumberOfNeighboursWith(neighbours, VegetalState.TREE);
-        int shrubNeighbours = getNumberOfNeighboursWith(neighbours, VegetalState.SHRUB);
+        int shrubNeighbours = getNumberOfShrubs(neighbours);
 
         if(c.getSpecificState() == SpecificState.NONE) {
             switch (c.getState()) {
@@ -50,7 +50,11 @@ public class GrowingPropagation implements Propagable {
         }
     }
 
+    private int getNumberOfShrubs(Set<Vegetal> neighbours) {
+        return neighbours.stream().filter((cell) -> (cell.getLastState() == VegetalState.SHRUB || cell.getLastState() == VegetalState.BEFORE_TREE)).collect(Collectors.toList()).size();
+    }
+
     private int getNumberOShrubOrTreeNeighbours(Set<Vegetal> neighbours) {
-        return neighbours.stream().filter((cell) -> (cell.getState() == VegetalState.SHRUB || cell.getState() == VegetalState.TREE)).collect(Collectors.toList()).size();
+        return neighbours.stream().filter((cell) -> (cell.getLastState() == VegetalState.SHRUB || cell.getLastState() == VegetalState.TREE)).collect(Collectors.toList()).size();
     }
 }

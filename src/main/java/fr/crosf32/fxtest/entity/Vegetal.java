@@ -8,7 +8,9 @@ import java.util.Set;
 public class Vegetal extends Cell {
 
     private VegetalState state = VegetalState.EMPTY;
-    private SpecificState specificState;
+    private VegetalState lastState = VegetalState.EMPTY;
+    private SpecificState specificState = SpecificState.NONE;
+    private SpecificState lastSpecificState = SpecificState.NONE;
 
     private Set<Vegetal> neighbours;
 
@@ -21,6 +23,7 @@ public class Vegetal extends Cell {
     }
 
     public Vegetal setState(VegetalState state) {
+        this.setLastState(this.state);
         this.state = state;
         return this;
     }
@@ -29,8 +32,10 @@ public class Vegetal extends Cell {
         return specificState;
     }
 
-    public void setSpecificState(SpecificState specificState) {
+    public Vegetal setSpecificState(SpecificState specificState) {
+        setLastSpecificState(this.specificState);
         this.specificState = specificState;
+        return this;
     }
 
     public Set<Vegetal> getNeighbours() {
@@ -39,5 +44,28 @@ public class Vegetal extends Cell {
 
     void setNeighbours(Set<Vegetal> neighbours) {
         this.neighbours = neighbours;
+    }
+
+    public VegetalState getLastState() {
+        return lastState;
+    }
+
+    public Vegetal setLastState(VegetalState lastState) {
+        this.lastState = lastState;
+        return this;
+    }
+
+    public SpecificState getLastSpecificState() {
+        return lastSpecificState;
+    }
+
+    public Vegetal setLastSpecificState(SpecificState lastSpecificState) {
+        this.lastSpecificState = lastSpecificState;
+        return this;
+    }
+
+    public void updateState() {
+        this.setLastState(getState());
+        this.setLastSpecificState(getSpecificState());
     }
 }

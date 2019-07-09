@@ -2,6 +2,7 @@ package fr.crosf32.fxtest.handler;
 
 import fr.crosf32.fxtest.entity.Cell;
 import fr.crosf32.fxtest.entity.Forest;
+import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.util.Random;
@@ -38,6 +39,11 @@ public class ForestBuilder {
 
     public ForestBuilder setAt(int row, int col, VegetalState state) {
         this.f.setCell(row, col, state);
+        return this;
+    }
+
+    public ForestBuilder setAt(int row, int col, VegetalState state, SpecificState specificState) {
+        this.f.setCell(row, col, state, specificState);
         return this;
     }
 
