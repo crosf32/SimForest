@@ -79,7 +79,7 @@ public class SimForestController {
 
     @FXML
     void initialize() {
-        assert rootPane != null : "fx:id=\"rootPane\" was not injected: check your FXML file 'SimForest.fxml'.";
+
 
     }
 }

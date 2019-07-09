@@ -9,7 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
-public class HomePageController {
+public class ConnectController {
 
     @FXML
     private ResourceBundle resources;
@@ -21,32 +21,16 @@ public class HomePageController {
     private AnchorPane rootPane;
 
     @FXML
-    private Button randomButton;
+    private Button connectButton;
 
     @FXML
-    private Button importButton;
+    private TextField username;
 
     @FXML
-    private Button generatButton;
+    private TextField passeword;
 
     @FXML
-    private TextField nbrCol;
-
-    @FXML
-    private TextField nbrRox;
-
-    @FXML
-    void generat(ActionEvent event) {
-
-    }
-
-    @FXML
-    void importAction(ActionEvent event) {
-
-    }
-
-    @FXML
-    void random(ActionEvent event) {
+    void connect(ActionEvent event) {
 
     }
 
