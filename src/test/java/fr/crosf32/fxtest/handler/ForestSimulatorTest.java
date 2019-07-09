@@ -23,14 +23,10 @@ class ForestSimulatorTest {
                 .get();
 
         assertNotNull(f.getCell(5,5));
-        assertNotNull(f.getCell(2,2).getState());
+
+
 
     }
-
-
-}
-
-
 
     @Test
     void setMaxTime() {
