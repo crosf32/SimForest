@@ -1,6 +1,7 @@
 package fr.crosf32.fxtest.handler;
 
 import fr.crosf32.fxtest.entity.Forest;
+import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.enums.VegetalState;
 import org.junit.jupiter.api.Test;
 

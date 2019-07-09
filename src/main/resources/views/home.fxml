@@ -24,16 +24,20 @@
             <Button fx:id="generateButton" layoutX="593.0" layoutY="524.0" mnemonicParsing="false" onAction="#generateGrid" prefHeight="44.0" prefWidth="95.0" style="-fx-background-color: B0410A;" text="Générer" textFill="WHITE" />
             <Label layoutX="320.0" layoutY="345.0" text="Nombre de colonnes" textFill="WHITE">
                <font>
-                  <Font name="System Bold Italic" size="20.0" />
+                  <Font name="Segoe UI Bold" size="20.0" />
                </font>
             </Label>
             <Label layoutX="718.0" layoutY="345.0" text="Nombre de lignes" textFill="WHITE">
                <font>
-                  <Font name="System Bold Italic" size="20.0" />
+                  <Font name="Segoe UI Bold" size="20.0" />
                </font>
             </Label>
             <TextField fx:id="nbrCol" layoutX="328.0" layoutY="409.0" promptText="100" />
-            <TextField fx:id="nbrRox" layoutX="726.0" layoutY="409.0" promptText="100" />
+            <TextField fx:id="nbrRow" layoutX="726.0" layoutY="409.0" promptText="100" />
+            <Label fx:id="errorText" alignment="CENTER" contentDisplay="CENTER" layoutX="434.0" layoutY="579.0" prefHeight="21.0" prefWidth="413.0" textFill="#c91515">
+               <font>
+                  <Font name="Segoe UI Bold" size="20.0" />
+               </font></Label>
          </children>
       </Pane>
    </children>

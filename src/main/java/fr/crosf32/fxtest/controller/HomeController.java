@@ -1,7 +1,10 @@
 package fr.crosf32.fxtest.controller;
 
+import fr.crosf32.fxtest.SlimForest;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+
 
 public class HomeController {
 
@@ -10,6 +13,9 @@ public class HomeController {
 
     @FXML
     private TextField nbrRow;
+
+    @FXML
+    private Label errorText;
 
     public void randomButton() {
 
@@ -20,6 +26,31 @@ public class HomeController {
     }
 
     public void generateGrid() {
-        System.out.println(nbrCol.getText());
+        if(!inputAreGood()) {
+            errorText.setText("Veuillez définir toutes les valeurs (entiers)");
+            return;
+        }
+
+        errorText.setText("");
+        SlimForest.getInstance().getFxWindowManager().openMainWindow(getIntegerFromString(nbrCol.getText()), getIntegerFromString(nbrRow.getText()));
+    }
+
+    private boolean inputAreGood() {
+        String colText = nbrCol.getText();
+        String rowText = nbrRow.getText();
+
+        return (colText.length() != 0 && rowText.length() != 0 && isInteger(colText) && isInteger(rowText) && Integer.valueOf(colText) >= 3 && Integer.valueOf(rowText) >= 3);
+    }
+
+    private boolean isInteger(String s) {
+        return getIntegerFromString(s) != -1;
+    }
+
+    private int getIntegerFromString(String s) {
+        try {
+            return Integer.valueOf(s);
+        } catch(Exception e) {
+            return -1;
+        }
     }
 }

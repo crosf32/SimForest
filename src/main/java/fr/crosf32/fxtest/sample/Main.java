@@ -9,8 +9,11 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    private static Stage primaryStage; // **Declare static Stage**
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
+        setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(getClass().getResource("/views/home.fxml"));
 
         Scene scene = new Scene(root);
@@ -28,7 +31,11 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    private void setPrimaryStage(Stage stage) {
+        Main.primaryStage = stage;
+    }
+
+    static public Stage getPrimaryStage() {
+        return Main.primaryStage;
     }
 }
