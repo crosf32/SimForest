@@ -22,14 +22,15 @@ public class ForestBuilder {
         int width = this.f.getWidth();
         int height = this.f.getHeight();
 
-        int nbr = (width*height) / 10;
+        int nbr = (width*height) / 100;
 
         for(int i = 0; i < nbr; i++) {
             int randomRow = new Random().nextInt(width);
             int randomCol = new Random().nextInt(height);
 
             VegetalState randomState = VegetalState.values()[new Random().nextInt(VegetalState.values().length)];
-            setAt(randomRow, randomCol, randomState);
+           // setAt(randomRow, randomCol, randomState);
+            setAt(randomRow, randomCol, VegetalState.TREE);
         }
 
         return this;
@@ -45,6 +46,7 @@ public class ForestBuilder {
     }
 
     public Forest get() {
+        f.calcNeibhours();
         return this.f;
     }
 }

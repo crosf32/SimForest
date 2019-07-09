@@ -4,7 +4,7 @@ public enum VegetalState {
     EMPTY("0", 0, 0),
     YOUNG("1", 25, 75),
     SHRUB("2", 50, 50),
-    BEFORE_TREE("3", 50, 50),
+    BEFORE_TREE("2", 50, 50),
     TREE("4", 75, 25);
 
     private String displayNumber;

@@ -1,20 +1,27 @@
 package fr.crosf32.fxtest.propagation;
 
-import fr.crosf32.fxtest.entity.Cell;
+import fr.crosf32.fxtest.entity.Forest;
+import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class BugPropagation implements Propagable {
-    @Override
-    public Cell[] getNeighbours(Cell c) {
-        return new Cell[0];
+
+    private Forest forest;
+
+    public BugPropagation(Forest forest) {
+        this.forest = forest;
     }
 
     @Override
-    public void propagate(Cell c) {
-        int infectedNeighbours = getNumberOfNeighboursWith(getNeighbours(c), SpecificState.INFECTED);
+    public void propagate(Vegetal c) {
+        Set<Vegetal> neighbours = getDirectNeighbours(c);
+
+        int infectedNeighbours = getNumberOfNeighboursWith(neighbours, SpecificState.INFECTED);
 
         if(c.getSpecificState() == SpecificState.INFECTED) {
             c.setSpecificState(SpecificState.NONE);
@@ -30,5 +37,9 @@ public class BugPropagation implements Propagable {
                 }
             }
         }
+    }
+
+    private Set<Vegetal> getDirectNeighbours(Vegetal parent) {
+        return parent.getNeighbours().stream().filter(vegetal -> vegetal.getRow() == parent.getRow() || vegetal.getCol() == parent.getCol()).collect(Collectors.toSet());
     }
 }

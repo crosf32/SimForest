@@ -1,33 +1,13 @@
 package fr.crosf32.fxtest.entity;
 
-import fr.crosf32.fxtest.enums.SpecificState;
-import fr.crosf32.fxtest.enums.VegetalState;
+import java.util.Set;
 
 public class Cell {
-    private VegetalState state = VegetalState.EMPTY;
-    private SpecificState specificState;
     private int row, col;
 
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;
-    }
-
-    public VegetalState getState() {
-        return state;
-    }
-
-    public Cell setState(VegetalState state) {
-        this.state = state;
-        return this;
-    }
-
-    public SpecificState getSpecificState() {
-        return specificState;
-    }
-
-    public void setSpecificState(SpecificState specificState) {
-        this.specificState = specificState;
     }
 
     public int getCol() {

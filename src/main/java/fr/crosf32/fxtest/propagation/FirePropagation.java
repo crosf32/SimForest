@@ -1,22 +1,26 @@
 package fr.crosf32.fxtest.propagation;
 
-import fr.crosf32.fxtest.entity.Cell;
+import fr.crosf32.fxtest.entity.Forest;
+import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.util.Random;
+import java.util.Set;
 
 public class FirePropagation implements Propagable {
+    private Forest forest;
 
-    @Override
-    public Cell[] getNeighbours(Cell c) {
-        return new Cell[0];
+    public FirePropagation(Forest forest) {
+        this.forest = forest;
     }
 
     @Override
-    public void propagate(Cell c) {
+    public void propagate(Vegetal c) {
+        Set<Vegetal> neighbours = c.getNeighbours();
+
         int probability = c.getState().getRiskOfFire();
-        int firedNeighbours = getNumberOfNeighboursWith(getNeighbours(c), SpecificState.FIRE);
+        int firedNeighbours = getNumberOfNeighboursWith(neighbours, SpecificState.FIRE);
 
         if(firedNeighbours >= 1) {
            int rand = new Random().nextInt(100);
