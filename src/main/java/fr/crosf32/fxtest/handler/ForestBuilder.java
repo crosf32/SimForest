@@ -30,8 +30,7 @@ public class ForestBuilder {
             int randomCol = new Random().nextInt(height);
 
             VegetalState randomState = VegetalState.values()[new Random().nextInt(VegetalState.values().length)];
-           // setAt(randomRow, randomCol, randomState);
-            setAt(randomRow, randomCol, VegetalState.TREE);
+            setAt(randomRow, randomCol, randomState);
         }
 
         return this;
@@ -52,7 +51,7 @@ public class ForestBuilder {
     }
 
     public Forest get() {
-        f.calcNeibhours();
+        f.calcNeighours();
         return this.f;
     }
 }

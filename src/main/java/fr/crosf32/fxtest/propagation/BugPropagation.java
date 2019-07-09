@@ -1,6 +1,5 @@
 package fr.crosf32.fxtest.propagation;
 
-import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
@@ -10,12 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BugPropagation implements Propagable {
-
-    private Forest forest;
-
-    public BugPropagation(Forest forest) {
-        this.forest = forest;
-    }
 
     @Override
     public void propagate(Vegetal c) {

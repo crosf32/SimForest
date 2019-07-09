@@ -23,9 +23,9 @@ public class ForestSimulator {
 
     public ForestSimulator(Forest forest) {
         this.forest = forest;
-        this.growingPropagation = new GrowingPropagation(forest);
-        this.firePropagation = new FirePropagation(forest);
-        this.bugPropagation = new BugPropagation(forest);
+        this.growingPropagation = new GrowingPropagation();
+        this.firePropagation = new FirePropagation();
+        this.bugPropagation = new BugPropagation();
     }
 
     public void displayForConsole() {

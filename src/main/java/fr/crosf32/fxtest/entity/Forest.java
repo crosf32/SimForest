@@ -35,7 +35,7 @@ public class Forest extends Grid<Vegetal> {
         super.setCell(new Vegetal(row, col).setState(state).setLastState(state).setSpecificState(specificState).setLastSpecificState(specificState));
     }
 
-    public void calcNeibhours() {
+    public void calcNeighours() {
         getCells().forEach(vegetal -> {
             vegetal.setNeighbours(getAllNeighbours(vegetal));
         });
