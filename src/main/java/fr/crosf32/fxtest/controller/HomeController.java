@@ -27,7 +27,7 @@ public class HomeController {
 
     public void generateGrid() {
         if(!inputAreGood()) {
-            errorText.setText("Veuillez définir toutes les valeurs (entiers)");
+            errorText.setText("Veuillez définir toutes les valeurs (entiers <= 150)");
             return;
         }
 
@@ -39,7 +39,17 @@ public class HomeController {
         String colText = nbrCol.getText();
         String rowText = nbrRow.getText();
 
-        return (colText.length() != 0 && rowText.length() != 0 && isInteger(colText) && isInteger(rowText) && Integer.valueOf(colText) >= 3 && Integer.valueOf(rowText) >= 3);
+        if(colText.length() == 0 || rowText.length() == 0 || !isInteger(colText) || !isInteger(rowText) ) {
+          return false;
+        } else {
+            int rowInt = getIntegerFromString(colText);
+            int colInt = getIntegerFromString(rowText);
+            if(rowInt < 3 || colInt < 3 || rowInt > 150 || colInt > 150) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean isInteger(String s) {

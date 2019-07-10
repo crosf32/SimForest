@@ -1,6 +1,5 @@
 package fr.crosf32.fxtest.handler;
 
-import fr.crosf32.fxtest.controller.MainController;
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.propagation.BugPropagation;
@@ -8,7 +7,6 @@ import fr.crosf32.fxtest.propagation.FirePropagation;
 import fr.crosf32.fxtest.propagation.GrowingPropagation;
 import fr.crosf32.fxtest.window.WindowForestUpdatable;
 
-import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -20,6 +18,7 @@ public class ForestSimulator {
     private Forest forest;
     private int time = 0;
     private int maxTime, delay;
+    private boolean cancelled = false;
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
@@ -44,7 +43,7 @@ public class ForestSimulator {
                 calculate();
                 displayForConsole();
                 time++;
-                if(time >= maxTime) {
+                if(time >= maxTime || cancelled) {
                     executorService.shutdown();
                 }
             };
@@ -65,7 +64,7 @@ public class ForestSimulator {
                 displayForConsole();
                 clazz.updateCells(updated);
                 time++;
-                if(time >= maxTime) {
+                if(time >= maxTime || cancelled) {
                     executorService.shutdown();
                 }
             };
@@ -88,19 +87,24 @@ public class ForestSimulator {
         return this;
     }
 
+    public ForestSimulator setTime(int time) {
+        this.time = time;
+        return this;
+    }
+
     public ForestSimulator setDelay(int delay) {
         this.delay = delay;
         return this;
     }
 
-    private Set<Vegetal> calculate() {
+    public Set<Vegetal> calculate() {
         forest.getCells().forEach(vegetal -> {
             firePropagation.propagate(vegetal);
             bugPropagation.propagate(vegetal);
             growingPropagation.propagate(vegetal);
         });
 
-        return forest.getCells().stream().filter(vegetal -> vegetal.updateState() == true).collect(Collectors.toSet());
+        return forest.getCells().stream().filter(Vegetal::updateState).collect(Collectors.toSet());
     }
 
     public FirePropagation getFirePropagation() {
@@ -109,5 +113,13 @@ public class ForestSimulator {
 
     public BugPropagation getBugPropagation() {
         return bugPropagation;
+    }
+
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 }

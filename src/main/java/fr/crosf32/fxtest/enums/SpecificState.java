@@ -3,7 +3,7 @@ package fr.crosf32.fxtest.enums;
 public enum SpecificState {
     NONE("0", ""),
     FIRE("F", "#FF0000"),
-    ASH("C", "#575957"),
+    ASH("C", "#99938F"),
     INFECTED("T", "#FBFF00");
 
     private String displayNumber, color;

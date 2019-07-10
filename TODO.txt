@@ -1,9 +1,4 @@
 Impl scroll pane
 
-
-Step By Step In Window
-Update only cells which changed
-
-
 Exporter / Importer BDD
 Export CSV densités
