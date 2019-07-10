@@ -2,22 +2,29 @@ package fr.crosf32.fxtest.controller;
 
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
+import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 import fr.crosf32.fxtest.handler.ForestBuilder;
 import fr.crosf32.fxtest.handler.ForestSimulator;
 import fr.crosf32.fxtest.handler.ForestWindowManager;
+import fr.crosf32.fxtest.window.WindowForestUpdatable;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-public class MainController {
+public class MainController implements WindowForestUpdatable {
 
     @FXML
     private GridPane forestGridPane;
+
+    @FXML
+    private TextField delayInput;
+
+    @FXML
+    private TextField maxTimeInput;
 
     private ForestWindowManager forestWindowManager;
 
@@ -27,12 +34,17 @@ public class MainController {
 
     private VegetalState chosenVegetal;
 
+    private int width, height;
+
+    // placement vegetal ==> 60%
+
+
     public void loadGrid(int width, int height) {
+        this.width = width;
+        this.height = height;
+
         this.forest = new Forest(width, height);
         this.forestBuilder = new ForestBuilder(forest);
-        this.forestSimulator = new ForestSimulator(forest);
-
-        this.forestBuilder.setAt(0, 0, VegetalState.YOUNG);
 
         forestGridPane.getRowConstraints().clear();
         forestGridPane.getColumnConstraints().clear();
@@ -55,36 +67,22 @@ public class MainController {
             }
         }
 
-        /*forest.setOnMouseClicked((event) -> {
-            for( Node node: forest.getChildren()) {
-                if( node instanceof Pane) {
-                    if( node.getBoundsInParent().contains(event.getSceneX(),  event.getSceneY())) {
-                        System.out.println( "Node: " + node + " at " + GridPane.getRowIndex( node) + "/" + GridPane.getColumnIndex( node));
-                        node.setStyle("-fx-background-color: red;");
-                    }
-                }
-            }
-        });*/
-
-        forestGridPane.setOnMouseDragOver((event) -> {
+        forestGridPane.setOnMouseClicked((event) -> {
             for( Node node: forestGridPane.getChildren()) {
                 if( node instanceof Pane) {
                     if( node.getBoundsInParent().contains(event.getSceneX(),  event.getSceneY())) {
-                        System.out.println( "Node: " + node + " at " + GridPane.getRowIndex( node) + "/" + GridPane.getColumnIndex( node));
-                        node.setStyle("-fx-background-color: red;");
+                        int row = GridPane.getRowIndex( node);
+                        int col = GridPane.getColumnIndex( node);
+                        getForestBuilder().setAt(row, col, chosenVegetal);
+                        applyColor((Pane) node, chosenVegetal);
                     }
                 }
             }
         });
     }
 
-    // setAt --> F
-    // getCell(x, y).getState().getColor();
-    // set simulation delay
-    // set
-
-    private Node getNodeFromGridPane(GridPane gridPane, int col, int row) {
-        for (Node node : gridPane.getChildren())
+    private Node getNodeFromGridPane(int col, int row) {
+        for (Node node : forestGridPane.getChildren())
             if (GridPane.getColumnIndex(node) != null
                     && GridPane.getColumnIndex(node) != null
                     && GridPane.getRowIndex(node) == row
@@ -95,7 +93,7 @@ public class MainController {
 
     private void addPane(int colIndex, int rowIndex) {
         Pane pane = new Pane();
-        pane.setStyle("-fx-background-color: " + VegetalState.EMPTY.getColor());
+        applyColor(pane, VegetalState.EMPTY);
         forestGridPane.add(pane, colIndex, rowIndex);
     }
 
@@ -119,12 +117,9 @@ public class MainController {
 
     }
 
-    public void nbrFrame() {
-
-    }
-
     public void export() {
-
+        resetGrid();
+        getForestBuilder().reset();
     }
 
     public void importButton() {
@@ -145,18 +140,66 @@ public class MainController {
 
     public void start() {
         this.forest.calcNeighours();
-        this.forestSimulator.setDelay(0).setMaxTime(2);
-        this.forestSimulator.launchSimulation();
-        updateCells(new HashSet<>(this.forest.getCells()));
+
+        ForestSimulator forestSimulator = buildForestSimulator();
+        if(forest != null) {
+            forestSimulator.launchSimulation(this);
+        }
     }
 
+
+    private ForestSimulator buildForestSimulator() {
+        ForestSimulator forestSimulator = new ForestSimulator(getForestBuilder().get());
+        int delay = getSafeInt(delayInput.getText());
+        int maxTime = getSafeInt(maxTimeInput.getText());
+
+        System.out.println(delay);
+        System.out.println(maxTime);
+        if(delay < 0 || maxTime < 0) {
+            System.out.println("Error inputs");
+            //TODO : Message error
+            return null;
+        }
+
+        return forestSimulator.setDelay(delay).setMaxTime(maxTime);
+    }
+
+    private int getSafeInt(String s) { // TODO : Duplicate code
+        try {
+            return Integer.valueOf(s);
+        } catch(Exception e) {
+            return -1;
+        }
+    }
+
+    private void applyColor(Pane pane, VegetalState state) {
+        applyStringColor(pane, state.getColor());
+    }
+
+    private void applyColor(Pane pane, SpecificState state) {
+        applyStringColor(pane, state.getColor());
+    }
+
+    private void applyStringColor(Pane pane, String color) {
+        pane.setStyle("-fx-background-color: " + color);
+    }
+
+    public void updateCell(int row, int col, VegetalState state) {
+         applyColor((Pane) getNodeFromGridPane(row, col), state);
+    }
+
+    @Override
     public void updateCells(Set<Vegetal> vegetals) {
         vegetals.forEach(vegetal -> {
             int row = vegetal.getRow();
             int col = vegetal.getCol();
 
-            Pane pane = (Pane) getNodeFromGridPane(forestGridPane, row, col);
-            pane.setStyle("-fx-background-color: " + vegetal.getColor());
+            Pane pane = (Pane) getNodeFromGridPane(col, row);
+            System.out.println(col + " " + row);
+            System.out.println(pane.getClass());
+            System.out.println(pane.getStyle());
+            applyColor(pane, vegetal.getState());
+            System.out.println(pane.getStyle());
         });
     }
 
@@ -174,5 +217,13 @@ public class MainController {
 
     public void setForestBuilder(ForestBuilder forestBuilder) {
         this.forestBuilder = forestBuilder;
+    }
+
+    public void resetGrid() {
+        for (int i = 0; i < width; i++) {
+            for (int y = 0; y < height; y++) {
+                applyColor((Pane) getNodeFromGridPane(i, y), VegetalState.EMPTY);
+            }
+        }
     }
 }

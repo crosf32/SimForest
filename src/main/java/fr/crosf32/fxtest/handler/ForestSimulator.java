@@ -1,14 +1,20 @@
 package fr.crosf32.fxtest.handler;
 
+import fr.crosf32.fxtest.controller.MainController;
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.propagation.BugPropagation;
 import fr.crosf32.fxtest.propagation.FirePropagation;
 import fr.crosf32.fxtest.propagation.GrowingPropagation;
+import fr.crosf32.fxtest.window.WindowForestUpdatable;
 
+import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class ForestSimulator {
     private Forest forest;
@@ -52,6 +58,31 @@ public class ForestSimulator {
         }
     }
 
+    public <T extends WindowForestUpdatable> void launchSimulation(T clazz) {
+        if(delay != 0) {
+            Runnable r = () -> {
+                Set<Vegetal> updated = calculate();
+                displayForConsole();
+                clazz.updateCells(updated);
+                time++;
+                if(time >= maxTime) {
+                    executorService.shutdown();
+                }
+            };
+
+            executorService.scheduleWithFixedDelay(r, 0, delay, TimeUnit.SECONDS);
+        } else {
+            Set<Vegetal> updated = new HashSet<>();
+            for(int i = 0; i < maxTime; i++) {
+                Set<Vegetal> localUpdated = calculate();
+                updated.addAll(localUpdated);
+                displayForConsole();
+            }
+            clazz.updateCells(updated);
+        }
+        time = 0;
+    }
+
     public ForestSimulator setMaxTime(int maxTime) {
         this.maxTime = maxTime;
         return this;
@@ -62,30 +93,21 @@ public class ForestSimulator {
         return this;
     }
 
-
-    private void calculate() {
+    private Set<Vegetal> calculate() {
         forest.getCells().forEach(vegetal -> {
             firePropagation.propagate(vegetal);
             bugPropagation.propagate(vegetal);
             growingPropagation.propagate(vegetal);
         });
 
-        forest.getCells().forEach(Vegetal::updateState);
+        return forest.getCells().stream().filter(vegetal -> vegetal.updateState() == true).collect(Collectors.toSet());
     }
 
     public FirePropagation getFirePropagation() {
         return firePropagation;
     }
 
-    public void setFirePropagation(FirePropagation firePropagation) {
-        this.firePropagation = firePropagation;
-    }
-
     public BugPropagation getBugPropagation() {
         return bugPropagation;
-    }
-
-    public void setBugPropagation(BugPropagation bugPropagation) {
-        this.bugPropagation = bugPropagation;
     }
 }

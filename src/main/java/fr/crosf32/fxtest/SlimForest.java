@@ -1,9 +1,5 @@
 package fr.crosf32.fxtest;
 
-import fr.crosf32.fxtest.entity.Forest;
-import fr.crosf32.fxtest.enums.VegetalState;
-import fr.crosf32.fxtest.handler.ForestBuilder;
-import fr.crosf32.fxtest.handler.ForestSimulator;
 import fr.crosf32.fxtest.handler.FxWindowManager;
 import fr.crosf32.fxtest.sample.Main;
 
@@ -21,7 +17,7 @@ public class SlimForest {
 
         System.out.println("-- SimForest --");
 
-        Forest f = new ForestBuilder()
+       /* Forest f = new ForestBuilder()
             .setAt(2, 2, VegetalState.TREE)
             .setAt(2, 3, VegetalState.TREE)
             .setAt(1, 2, VegetalState.YOUNG)
@@ -32,7 +28,7 @@ public class SlimForest {
 
         forestSimulator.setMaxTime(1)
         .setDelay(0)
-        .launchSimulation();
+        .launchSimulation();*/
     }
 
     public FxWindowManager getFxWindowManager() {

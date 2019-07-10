@@ -36,6 +36,22 @@ public class ForestBuilder {
         return this;
     }
 
+    public void reset() {
+        f.resetGrid();
+    }
+
+   /* private void save() {
+        Set<Vegetal> changedCells = f.getCells().stream().filter(vegetal -> vegetal.getState() != VegetalState.EMPTY || vegetal.getSpecificState() != SpecificState.NONE).collect(Collectors.toSet());
+        changedCells.forEach(cell -> {
+            if(cell.getState() != VegetalState.EMPTY) {
+                initVegetalStates.put(cell, cell.getState());
+            }
+            if(cell.getSpecificState() != SpecificState.NONE) {
+                initSpecificStates.put(cell, cell.getSpecificState());
+            }
+        });
+    }*/
+
     public ForestBuilder setAt(int row, int col, VegetalState state) {
         this.f.setCell(row, col, state);
         return this;

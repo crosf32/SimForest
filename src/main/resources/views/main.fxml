@@ -20,12 +20,6 @@
                 <Image url="@../images/background.jpg" />
             </image>
         </ImageView>
-        <Pane layoutX="30.0" layoutY="19.0" prefHeight="804.0" prefWidth="1287.0" style="-fx-background-color: B0410A; -fx-opacity: .3;" AnchorPane.bottomAnchor="-4.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-7.0" AnchorPane.topAnchor="0.0" />
-        <Label layoutX="911.0" layoutY="206.0" prefHeight="54.0" prefWidth="265.0" text="Nombre d'étapes" textFill="WHITE">
-            <font>
-                <Font name="System Bold" size="32.0" />
-            </font>
-        </Label>
         <Pane prefHeight="804.0" prefWidth="833.0" style="-fx-background-color: white;">
             <children>
                 <GridPane fx:id="forestGridPane" gridLinesVisible="true" prefHeight="804.0" prefWidth="833.0">
@@ -47,10 +41,16 @@
                 </GridPane>
             </children>
         </Pane>
+      <TextField fx:id="delayInput" layoutX="924.0" layoutY="333.0" prefHeight="26.0" prefWidth="240.0" style="-fx-background-color: white; -fx-opacity: .8;" />
+        <Label layoutX="911.0" layoutY="157.0" prefHeight="54.0" prefWidth="265.0" text="Nombre d'étapes" textFill="WHITE">
+            <font>
+                <Font name="Segoe UI Bold" size="32.0" />
+            </font>
+        </Label>
         <CheckBox layoutX="849.0" layoutY="31.0" mnemonicParsing="false" onAction="#young" text="Planter jeune pousse" textFill="WHITE" />
         <CheckBox layoutX="849.0" layoutY="91.0" mnemonicParsing="false" onAction="#startFire" text="départ Incendie" textFill="WHITE" />
         <CheckBox layoutX="849.0" layoutY="120.0" mnemonicParsing="false" onAction="#startInfection" text="départ infection" textFill="WHITE" />
-        <TextField layoutX="918.0" layoutY="284.0" onAction="#nbrFrame" prefHeight="26.0" prefWidth="240.0" style="-fx-background-color: white; -fx-opacity: .8;" />
+        <TextField fx:id="maxTimeInput" layoutX="924.0" layoutY="211.0" prefHeight="26.0" prefWidth="240.0" style="-fx-background-color: white; -fx-opacity: .8;" />
         <Button layoutX="877.0" layoutY="533.0" mnemonicParsing="false" onAction="#export" style="-fx-background-color: B0410A;" text="Exporter" textFill="WHITE" />
         <Button layoutX="1130.0" layoutY="533.0" mnemonicParsing="false" onAction="#importButton" style="-fx-background-color: B0410A;" text="Importer" textFill="WHITE" />
         <Button layoutX="853.0" layoutY="633.0" mnemonicParsing="false" onAction="#nextFrame" style="-fx-background-color: B0410A;" text="Prochaine étape" textFill="WHITE" />
@@ -60,5 +60,10 @@
         <CheckBox layoutX="1080.0" layoutY="31.0" mnemonicParsing="false" onAction="#tree" text="Planter arbre" textFill="WHITE" />
         <Button layoutX="950.0" layoutY="400.0" mnemonicParsing="false" onAction="#start" prefHeight="61.0" prefWidth="187.0" style="-fx-background-color: B0410A;" text="Lancer la simulation" textFill="WHITE" />
         <Button layoutX="1144.0" layoutY="714.0" mnemonicParsing="false" style="-fx-background-color: B0410A;" text="Retour" textFill="WHITE" />
+      <Label alignment="CENTER" layoutX="884.0" layoutY="296.0" prefHeight="37.0" prefWidth="319.0" text="Délai entre les étapes" textFill="WHITE">
+         <font>
+            <Font name="Segoe UI Bold" size="30.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

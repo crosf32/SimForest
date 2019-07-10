@@ -72,8 +72,12 @@ public class Vegetal extends Cell {
         return this;
     }
 
-    public void updateState() {
-        this.setLastState(getState());
-        this.setLastSpecificState(getSpecificState());
+    public boolean updateState() {
+        if(this.getLastSpecificState() != this.getLastSpecificState() || this.getState() != this.getLastState()) {
+            this.setLastState(getState());
+            this.setLastSpecificState(getSpecificState());
+            return true;
+        }
+        return false;
     }
 }
