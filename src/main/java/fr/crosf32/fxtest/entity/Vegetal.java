@@ -2,10 +2,11 @@ package fr.crosf32.fxtest.entity;
 
 import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
+import fr.crosf32.fxtest.propagation.Propagable;
 
 import java.util.Set;
 
-public class Vegetal extends Cell {
+    public  class Vegetal extends Cell  {
 
     private VegetalState state = VegetalState.EMPTY;
     private VegetalState lastState = VegetalState.EMPTY;
