@@ -4,7 +4,6 @@ import fr.crosf32.fxtest.controller.MainController;
 import fr.crosf32.fxtest.sample.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 

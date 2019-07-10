@@ -28,7 +28,7 @@
         </Label>
         <Pane prefHeight="804.0" prefWidth="833.0" style="-fx-background-color: white;">
             <children>
-                <GridPane fx:id="forest" gridLinesVisible="true" prefHeight="804.0" prefWidth="833.0">
+                <GridPane fx:id="forestGridPane" gridLinesVisible="true" prefHeight="804.0" prefWidth="833.0">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

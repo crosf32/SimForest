@@ -28,6 +28,14 @@ public class Vegetal extends Cell {
         return this;
     }
 
+    public String getColor() {
+        if(getSpecificState() != SpecificState.NONE) {
+            return getSpecificState().getColor();
+        } else {
+            return getState().getColor();
+        }
+    }
+
     public SpecificState getSpecificState() {
         return specificState;
     }
