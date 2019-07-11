@@ -4,7 +4,6 @@ import fr.crosf32.fxtest.entity.Cell;
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
-
 import java.util.Random;
 
 public class ForestBuilder {
@@ -19,21 +18,32 @@ public class ForestBuilder {
         this.f = new Forest(10, 10);
     }
 
-    public ForestBuilder randomGeneration() {
+    public Integer[][] randomGeneration() {
         int width = this.f.getWidth();
         int height = this.f.getHeight();
 
-        int nbr = (width*height) / 100;
+        int nbr = (width*height) / 5;
+
+        Integer[][] randomCells = new Integer[width][height];
+        for(int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                randomCells[x][y] = -1;
+            }
+        }
 
         for(int i = 0; i < nbr; i++) {
             int randomRow = new Random().nextInt(width);
             int randomCol = new Random().nextInt(height);
 
-            VegetalState randomState = VegetalState.values()[new Random().nextInt(VegetalState.values().length)];
-            setAt(randomRow, randomCol, randomState);
+            if(randomCells[randomRow][randomCol] == -1) {
+                VegetalState randomState = VegetalState.values()[new Random().nextInt(VegetalState.values().length)];
+                setAt(randomRow, randomCol, randomState);
+
+                randomCells[randomRow][randomCol] = 1;
+            }
         }
 
-        return this;
+        return randomCells;
     }
 
     public void reset() {

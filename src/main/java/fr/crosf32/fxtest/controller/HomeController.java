@@ -1,10 +1,14 @@
 package fr.crosf32.fxtest.controller;
 
 import fr.crosf32.fxtest.SlimForest;
+import fr.crosf32.fxtest.database.DatabaseHandler;
+import fr.crosf32.fxtest.utils.WindowDialogUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-
+import javafx.scene.control.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 public class HomeController {
 
@@ -18,21 +22,66 @@ public class HomeController {
     private Label errorText;
 
     public void randomButton() {
-
+        openMainFrame(true, true);
     }
 
     public void importButton() {
-
+        Platform.runLater(() -> {
+            try {
+                openConnexionDialog();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                errorText.setText("Une erreur s'est produite");
+            }
+        });
     }
 
     public void generateGrid() {
-        if(!inputAreGood()) {
+        openMainFrame(false, true);
+    }
+
+    private void openMainFrame(boolean random, boolean checkInput) {
+        if(checkInput && !inputAreGood()) {
             errorText.setText("Veuillez définir toutes les valeurs (entiers <= 150)");
             return;
         }
 
-        errorText.setText("");
-        SlimForest.getInstance().getFxWindowManager().openMainWindow(getIntegerFromString(nbrCol.getText()), getIntegerFromString(nbrRow.getText()));
+        Platform.runLater(() -> {
+            errorText.setText("");
+
+            SlimForest.getInstance().getFxWindowManager().openMainWindow(getIntegerFromString(nbrCol.getText()), getIntegerFromString(nbrRow.getText()), random);
+        });
+
+    }
+
+    private void openConnexionDialog() {
+        Dialog<List<String>> dialog = WindowDialogUtils.getConnexionDialog();
+
+        Optional<List<String>> result = dialog.showAndWait();
+
+        if(result.isPresent()) {
+            List<String> res = result.get();
+            DatabaseHandler handler = SlimForest.getInstance().loadDatabase(res.get(0), res.get(1), res.get(2));
+
+            if(handler.getConnector().isConnected()) {
+                try {
+                    int configNumber = handler.getNumberOfConfigs().get();
+                    if(configNumber == 0) {
+                        errorText.setText("Erreur : Aucune configuration présente sur cette base de donnée");
+                        return;
+                    }
+                    openChooseConfigNumber(configNumber);
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void openChooseConfigNumber(int max) {
+        Dialog<String> dialog = WindowDialogUtils.getConfigNumberDialog(max);
+        Optional<String> result = dialog.showAndWait();
+        result.ifPresent(s -> SlimForest.getInstance().getFxWindowManager().openMainWindowFromDatabase(getIntegerFromString(s)));
     }
 
     private boolean inputAreGood() {

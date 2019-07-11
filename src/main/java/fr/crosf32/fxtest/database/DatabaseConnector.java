@@ -4,7 +4,10 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseConnector {
 
@@ -36,7 +39,7 @@ public class DatabaseConnector {
 
     private void connect(String database, String username, String password) {
         try {
-            config.setJdbcUrl( "jdbc:mysql://localhost:3306/" +  database + "?useSSL=false&autoReconnect=true&useUnicode=yes" );
+            config.setJdbcUrl( "jdbc:mysql://localhost:3306/" +  database + "?useSSL=false&autoReconnect=true&useUnicode=yes&useLegacyDatetimeCode=false&serverTimezone=UTC" );
             config.setUsername( username );
             config.setPassword( password );
             config.addDataSourceProperty( "cachePrepStmts" , "true" );
@@ -46,19 +49,8 @@ public class DatabaseConnector {
         } catch(Exception e) {
             System.err.println("Aucune connexion à la base de donnée possible");
         }
-
-
-        /*try {
-            Class.forName("com.mysql.jdbc.Driver");
-            DriverManager.registerDriver(new com.mysql.jdbc.Driver ());
-
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/fxtest?useSSL=false&autoReconnect=true&useUnicode=yes", "root", "");
-
-            System.out.println("La connexion a bien été établie");
-        } catch(Exception e) {
-            e.printStackTrace();
-        }*/
     }
+
 
     public Connection getConnection() {
         try {
