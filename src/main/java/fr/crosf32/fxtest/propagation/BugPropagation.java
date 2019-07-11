@@ -25,9 +25,7 @@ public class BugPropagation implements Propagable {
 
                 int rand = new Random().nextInt(100);
 
-                System.out.println(rand + " prob " + probability);
                 if(rand <= probability) {
-                    System.out.println("infection");
                     c.setSpecificState(SpecificState.INFECTED);
                 }
             }

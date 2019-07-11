@@ -219,7 +219,6 @@ public class MainController implements WindowForestUpdatable {
                         return;
                     }
                     openChooseConfigDialog(handler.getNumberOfConfigs().get());
-                    System.out.println("ok");
                 }
             }
         }
@@ -243,7 +242,6 @@ public class MainController implements WindowForestUpdatable {
         });
 
         Optional<String> result = dialog.showAndWait();
-        System.out.println(dialog.getSelectedItem());
 
         String res = result.get();
         if (res == "save") {
@@ -287,7 +285,7 @@ public class MainController implements WindowForestUpdatable {
 
     @Override
     public void updateCells(Set<Vegetal> vegetals) {
-        vegetals.forEach(vegetal -> {
+        Platform.runLater(() -> vegetals.forEach(vegetal -> {
             int row = vegetal.getRow();
             int col = vegetal.getCol();
 
@@ -297,7 +295,7 @@ public class MainController implements WindowForestUpdatable {
             } else {
                 applyColor(pane, vegetal.getState());
             }
-        });
+        }));
         frameCounter++;
         displayFrameCount();
     }
@@ -334,6 +332,12 @@ public class MainController implements WindowForestUpdatable {
 
     private ForestSimulator buildForestSimulator() {
         ForestSimulator forestSimulator = new ForestSimulator(getForestBuilder().get());
+        List<String[]> stats = new ArrayList<>();
+        stats.add(new String[]{"Jeune pousse", "Arbuste", "Arbre", "Vide"});
+        if(getCurrentSimulation()!= null) {
+            stats = getCurrentSimulation().getStats();
+        }
+        forestSimulator.setStats(stats);
         if(frameCounter != 0) {
             forestSimulator.setTime(frameCounter);
         }

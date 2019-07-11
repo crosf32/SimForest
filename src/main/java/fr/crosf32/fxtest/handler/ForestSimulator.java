@@ -25,8 +25,6 @@ public class ForestSimulator {
     private boolean cancelled = false;
     private List<String[]> stats = new ArrayList<>();
 
-    ReentrantLock lock = new ReentrantLock();
-    int counter = 0;
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     private GrowingPropagation growingPropagation;
@@ -69,7 +67,7 @@ public class ForestSimulator {
         if(delay != 0) {
             Runnable r = () -> {
                 Set<Vegetal> updated = calculate();
-                displayForConsole();
+                if(updated.size() == 0) executorService.shutdown();
                 clazz.updateCells(updated);
                 time++;
                 if(time >= maxTime || cancelled) {
@@ -83,7 +81,6 @@ public class ForestSimulator {
             for(int i = 0; i < maxTime; i++) {
                 Set<Vegetal> localUpdated = calculate();
                 updated.addAll(localUpdated);
-                displayForConsole();
             }
             clazz.updateCells(updated);
         }
@@ -172,5 +169,9 @@ public class ForestSimulator {
 
     public List<String[]> getStats() {
         return stats;
+    }
+
+    public void setStats(List<String[]> stats) {
+        this.stats = stats;
     }
 }

@@ -25,8 +25,6 @@ public class SlimForest {
 
         new Thread(() -> javafx.application.Application.launch(Main.class)).start();
         fxWindowManager = new FxWindowManager();
-
-        System.out.println("-- SimForest --");
     }
 
     public void loadConfig(int num) {

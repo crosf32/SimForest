@@ -19,7 +19,6 @@ public class Main extends Application {
         Scene scene = new Scene(root);
 
         String css = getClass().getResource("/css/main.css").toExternalForm();
-        System.out.println(css);
         scene.getStylesheets().add(css);
 
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("/images/icons/app_icon.png")));
