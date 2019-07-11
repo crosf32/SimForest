@@ -21,6 +21,11 @@ public class Grid<T extends Cell> {
         generateBySize(width, height);
     }
 
+    public void resetGrid() {
+        this.cells = (T[][]) Array.newInstance(clazz, width, height);
+        generateBySize(width, height);
+    }
+
     T getCell(int row, int col) {
         return cells[row][col];
     }
@@ -29,7 +34,7 @@ public class Grid<T extends Cell> {
         this.cells[c.getRow()][c.getCol()] = c;
     }
 
-    private void generateBySize(int width, int height) { // 10 10
+    private void generateBySize(int width, int height) {
         try {
             for(int x = 0; x < width; x++) {
                 for(int y = 0; y < height; y++) {

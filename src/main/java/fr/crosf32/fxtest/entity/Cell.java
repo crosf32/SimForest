@@ -1,7 +1,5 @@
 package fr.crosf32.fxtest.entity;
 
-import java.util.Set;
-
 public class Cell {
     private int row, col;
 
