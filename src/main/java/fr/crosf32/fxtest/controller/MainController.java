@@ -8,6 +8,7 @@ import fr.crosf32.fxtest.entity.Vegetal;
 import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 import fr.crosf32.fxtest.handler.ForestBuilder;
+import fr.crosf32.fxtest.handler.ForestSimulator;
 import fr.crosf32.fxtest.utils.CsvForestGenerator;
 import fr.crosf32.fxtest.utils.IntegerUtils;
 import fr.crosf32.fxtest.utils.WindowDialogUtils;
