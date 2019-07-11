@@ -9,6 +9,7 @@ import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 import fr.crosf32.fxtest.handler.ForestBuilder;
 import fr.crosf32.fxtest.handler.ForestSimulator;
+import fr.crosf32.fxtest.utils.CsvForestGenerator;
 import fr.crosf32.fxtest.utils.IntegerUtils;
 import fr.crosf32.fxtest.utils.WindowDialogUtils;
 import fr.crosf32.fxtest.window.WindowForestUpdatable;
@@ -183,8 +184,8 @@ public class MainController implements WindowForestUpdatable {
         getForestBuilder().reset();
     }
 
-    public void export() { // TODO
-        System.out.println("export");
+    public void export() {
+        new CsvForestGenerator().generateCsv(getCurrentSimulation().getStats());
     }
 
     public void save() {
