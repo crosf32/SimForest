@@ -100,7 +100,7 @@ public class ForestSimulator {
 
         for(Vegetal vegetal : forest.getCells()) {
             if(vegetal.getSpecificState() != SpecificState.NONE) {
-                return;
+                continue;
             }
 
             switch(vegetal.getState()) {
@@ -124,7 +124,6 @@ public class ForestSimulator {
 
         int max = young + shrub + tree + empty;
 
-        // 125 100
         String[] strings = new String[]{(young*100/max) + "%", (shrub*100/max) + "%", (tree*100/max) + "%", (empty*100/max) +"%"};
         stats.add(strings);
     }

@@ -179,6 +179,7 @@ public class MainController implements WindowForestUpdatable {
         frameCounter = 0;
         if(getCurrentSimulation() != null) {
             getCurrentSimulation().setCancelled(true);
+            currentSimulation = null;
         }
         resetGrid();
         getForestBuilder().reset();
