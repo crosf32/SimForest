@@ -16,7 +16,7 @@ public class ForestBuilder {
         this.f = new Forest(10, 10);
     }
 
-    public void randomGeneration() {
+    public ForestBuilder randomGeneration() {
         int width = this.f.getWidth();
         int height = this.f.getHeight();
 
@@ -53,6 +53,7 @@ public class ForestBuilder {
                 randomCells[randomRow][randomCol] = 1;
             }
         }
+        return this;
     }
 
     public void reset() {

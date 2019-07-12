@@ -69,7 +69,6 @@ public class Grid<T extends Cell> {
             }
         }
 
-        //cells.forEach(cell -> System.out.println("cell voisine : " + cell.getRow() + " " + cell.getCol() ));
         return cells;
     }
 

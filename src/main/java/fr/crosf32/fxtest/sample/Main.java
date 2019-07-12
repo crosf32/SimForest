@@ -1,18 +1,23 @@
 package fr.crosf32.fxtest.sample;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class Main extends Application {
 
-    private static Stage primaryStage; // **Declare static Stage**
+    private static Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        primaryStage.setOnCloseRequest(event -> new Thread(() -> System.exit(0)).start());
+
         setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(getClass().getResource("/views/home.fxml"));
 
@@ -28,6 +33,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
+
     }
 
     private void setPrimaryStage(Stage stage) {

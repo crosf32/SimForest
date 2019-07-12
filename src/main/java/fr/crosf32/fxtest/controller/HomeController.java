@@ -80,21 +80,22 @@ public class HomeController {
     }
 
     private void openChooseConfigNumber(int max) {
-        System.out.println("ok la");
         Dialog<String> dialog = WindowDialogUtils.getConfigNumberDialog(max);
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(s -> SlimForest.getInstance().getFxWindowManager().openMainWindowFromDatabase(IntegerUtils.getSafeInt(s)));
     }
 
     private boolean inputAreGood() {
-        String colText = nbrCol.getText();
-        String rowText = nbrRow.getText();
+        if(nbrCol.getText().length() == 0 || nbrRow.getText().length() == 0) {
+            nbrCol.setText("100");
+            nbrRow.setText("100");
+        }
 
-        if(colText.length() == 0 || rowText.length() == 0 || !isInteger(colText) || !isInteger(rowText) ) {
+        if(!isInteger(nbrCol.getText()) || !isInteger(nbrRow.getText()) ) {
           return false;
         } else {
-            int rowInt = IntegerUtils.getSafeInt(colText);
-            int colInt = IntegerUtils.getSafeInt(rowText);
+            int rowInt = IntegerUtils.getSafeInt(nbrCol.getText());
+            int colInt = IntegerUtils.getSafeInt(nbrRow.getText());
             if(rowInt < 3 || colInt < 3 || rowInt > 250 || colInt > 250) {
                 return false;
             }
