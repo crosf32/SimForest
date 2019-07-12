@@ -1,3 +1,4 @@
-check all Tests
 check UML
 check slides
+
+display percent

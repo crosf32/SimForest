@@ -150,7 +150,11 @@ public class MainController implements WindowUpdatable {
     }
 
     public void export() {
-        new CsvForestGenerator().generateCsv(getCurrentSimulation().getStats());
+        if(getCurrentSimulation() != null) {
+            new CsvForestGenerator().generateCsv(getCurrentSimulation().getStats());
+        } else {
+           alert("Erreur : Aucune simulation lancée");
+        }
     }
 
     public void save() {

@@ -80,7 +80,6 @@ public class HomeController {
     }
 
     private void openChooseConfigNumber(int max) {
-        System.out.println("ok la");
         Dialog<String> dialog = WindowDialogUtils.getConfigNumberDialog(max);
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(s -> SlimForest.getInstance().getFxWindowManager().openMainWindowFromDatabase(IntegerUtils.getSafeInt(s)));
