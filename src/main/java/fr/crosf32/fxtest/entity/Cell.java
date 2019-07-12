@@ -1,6 +1,8 @@
 package fr.crosf32.fxtest.entity;
 
-public class Cell {
+import javafx.scene.layout.Pane;
+
+public class Cell extends Pane {
     private int row, col;
 
     public Cell(int row, int col) {

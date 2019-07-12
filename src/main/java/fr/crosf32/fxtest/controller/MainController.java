@@ -5,28 +5,25 @@ import fr.crosf32.fxtest.database.DatabaseHandler;
 import fr.crosf32.fxtest.entity.Config;
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 import fr.crosf32.fxtest.handler.ForestBuilder;
 import fr.crosf32.fxtest.handler.ForestSimulator;
 import fr.crosf32.fxtest.utils.CsvForestGenerator;
 import fr.crosf32.fxtest.utils.IntegerUtils;
 import fr.crosf32.fxtest.utils.WindowDialogUtils;
-import fr.crosf32.fxtest.window.WindowForestUpdatable;
+import fr.crosf32.fxtest.window.WindowUpdatable;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class MainController implements WindowForestUpdatable {
+public class MainController implements WindowUpdatable {
 
     @FXML
     private GridPane forestGridPane;
@@ -50,19 +47,17 @@ public class MainController implements WindowForestUpdatable {
     private ForestSimulator forestSimulator;
 
     private VegetalState chosenVegetal;
-    private SpecificState chosenSpecificState;
 
     private ForestSimulator currentSimulation;
 
     private int frameCounter = 0;
-    private Config config;
 
     public void nextStep() {
         ForestSimulator forestSimulator = buildForestSimulator();
 
         if(forestSimulator != null && frameCounter < IntegerUtils.getSafeInt(maxTimeInput.getText())) {
             forestSimulator.setDelay(1).setMaxTime(1);
-            forestSimulator.launchSimulation(this);
+            Platform.runLater(() -> forestSimulator.launchSimulation(this));
             currentSimulation = forestSimulator;
         }
     }
@@ -72,18 +67,10 @@ public class MainController implements WindowForestUpdatable {
     }
 
     public void loadGridFromDatabase(Config config, List<Vegetal> vegetals) {
-        this.config = config;
-
         loadGrid(config.getWidth(), config.getHeight(), false);
 
         for(Vegetal veg : vegetals) {
-            getForestBuilder().setAt(veg.getRow(), veg.getCol(), veg.getState(), veg.getSpecificState());
-            Node node = getNodeFromGridPane(veg.getRow(), veg.getCol());
-            if(veg.getSpecificState() == SpecificState.NONE) {
-                applyColor((Pane) node, veg.getState());
-            } else {
-                applyColor((Pane) node, veg.getSpecificState());
-            }
+            getForestBuilder().setAt(veg.getRow(), veg.getCol(), veg.getState());
         }
 
         delayInput.setText(String.valueOf(config.getDelay()));
@@ -114,7 +101,9 @@ public class MainController implements WindowForestUpdatable {
 
         for (int i = 0; i < width; i++) {
             for (int y = 0; y < width; y++) {
-                addPane(i, y);
+                Vegetal veg = forest.getCell(i, y);
+                addPane(i, y, veg);
+                veg.paint();
             }
         }
 
@@ -123,15 +112,9 @@ public class MainController implements WindowForestUpdatable {
                 for( Node node: forestGridPane.getChildren()) {
                     if( node instanceof Pane) {
                         if( node.getBoundsInParent().contains(event.getSceneX(),  event.getSceneY())) {
-                            int row = GridPane.getRowIndex( node);
-                            int col = GridPane.getColumnIndex( node);
-                            if((chosenVegetal == null || chosenVegetal == VegetalState.EMPTY) && chosenSpecificState != null) {
-                                getForestBuilder().setAt(row, col, VegetalState.TREE, chosenSpecificState);
-                                applyColor((Pane) node, chosenSpecificState);
-                            } else {
-                                getForestBuilder().setAt(row, col, chosenVegetal);
-                                applyColor((Pane) node, chosenVegetal);
-                            }
+                            int row = GridPane.getRowIndex(node);
+                            int col = GridPane.getColumnIndex(node);
+                            getForestBuilder().setAt(row, col, chosenVegetal);
                         }
                     }
                 }
@@ -139,17 +122,7 @@ public class MainController implements WindowForestUpdatable {
         });
 
         if(random) {
-            Set<Vegetal> vegetals = new HashSet<>();
-
-            Integer[][] map = forestBuilder.randomGeneration();
-            for(int x = 0; x < width; x++) {
-                for(int y = 0; y < height; y++) {
-                    if(map[x][y] != -1) {
-                        vegetals.add(forest.getCell(x, y));
-                    }
-                }
-            }
-            updateCells(vegetals);
+            forestBuilder.randomGeneration();
         }
     }
 
@@ -166,22 +139,20 @@ public class MainController implements WindowForestUpdatable {
     }
 
     public void chooseFire() {
-        this.chosenVegetal = VegetalState.EMPTY;
-        this.chosenSpecificState = SpecificState.FIRE;
+        this.chosenVegetal = VegetalState.FIRE;
     }
 
     public void chooseInfect() {
-        this.chosenVegetal = VegetalState.EMPTY;
-        this.chosenSpecificState = SpecificState.INFECTED;
+        this.chosenVegetal = VegetalState.INFECTED;
     }
 
     public void reset() {
+        frameCount.setText("");
         frameCounter = 0;
         if(getCurrentSimulation() != null) {
             getCurrentSimulation().setCancelled(true);
             currentSimulation = null;
         }
-        resetGrid();
         getForestBuilder().reset();
     }
 
@@ -277,32 +248,27 @@ public class MainController implements WindowForestUpdatable {
         frameCounter = 0;
 
         ForestSimulator forestSimulator = buildForestSimulator();
+
         currentSimulation = forestSimulator;
         if(forestSimulator != null) {
-            forestSimulator.launchSimulation(this);
+            try {
+                forestSimulator.launchSimulation(this);
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
             currentSimulation = forestSimulator;
         }
     }
 
     @Override
     public void updateCells(Set<Vegetal> vegetals) {
-        Platform.runLater(() -> vegetals.forEach(vegetal -> {
-            int row = vegetal.getRow();
-            int col = vegetal.getCol();
-
-            Pane pane = (Pane) getNodeFromGridPane(row, col);
-            if(vegetal.getSpecificState() != SpecificState.NONE) {
-                applyColor(pane, vegetal.getSpecificState());
-            } else {
-                applyColor(pane, vegetal.getState());
-            }
-        }));
-        frameCounter++;
-        displayFrameCount();
+        Platform.runLater(() -> vegetals.forEach(Vegetal::paint));
     }
 
-    private void displayFrameCount() {
-        Platform.runLater(() -> frameCount.setText(frameCounter + " / " + maxTimeInput.getText()));
+    @Override
+    public void updateTimer(int time) {
+        frameCounter = time;
+        displayFrameCount();
     }
 
     public ForestBuilder getForestBuilder() {
@@ -319,16 +285,6 @@ public class MainController implements WindowForestUpdatable {
 
     public void setForestBuilder(ForestBuilder forestBuilder) {
         this.forestBuilder = forestBuilder;
-    }
-
-    private void resetGrid() {
-        for (int i = 0; i < width; i++) {
-            for (int y = 0; y < height; y++) {
-                applyColor((Pane) getNodeFromGridPane(i, y), VegetalState.EMPTY);
-            }
-        }
-
-        frameCount.setText("");
     }
 
     private ForestSimulator buildForestSimulator() {
@@ -348,7 +304,6 @@ public class MainController implements WindowForestUpdatable {
 
         if(delay < 0 || maxTime < 0) {
             setError("Erreur : Veuillez renseignez tous les champs (entiers)");
-            //TODO : Message error
             return null;
         }
         setError("");
@@ -360,38 +315,18 @@ public class MainController implements WindowForestUpdatable {
         error.setText(s);
     }
 
-    private Node getNodeFromGridPane(int row, int col) {
-        for (Node node : forestGridPane.getChildren())
-            if (GridPane.getColumnIndex(node) != null
-                    && GridPane.getColumnIndex(node) != null
-                    && GridPane.getRowIndex(node) == row
-                    && GridPane.getColumnIndex(node) == col)
-                return node;
-        return null;
-    }
-
-    private void applyColor(Pane pane, VegetalState state) {
-        applyStringColor(pane, state.getColor());
-    }
-
-    private void applyColor(Pane pane, SpecificState state) {
-        applyStringColor(pane, state.getColor());
-    }
-
-    private void applyStringColor(Pane pane, String color) {
-        pane.setStyle("-fx-background-color: " + color);
-    }
-
-    private void addPane(int colIndex, int rowIndex) {
-        Pane pane = new Pane();
-        applyColor(pane, VegetalState.EMPTY);
-        forestGridPane.add(pane, colIndex, rowIndex);
+    private void addPane(int rowIndex, int colIndex, Vegetal veg) {
+        forestGridPane.add(veg, colIndex, rowIndex);
     }
 
     private int getSafeFromInput(TextField s) {
         int i = IntegerUtils.getSafeInt(s.getText());
         if(i == -1) return 0;
         return i;
+    }
+
+    private void displayFrameCount() {
+        Platform.runLater(() -> frameCount.setText(frameCounter + " / " + maxTimeInput.getText()));
     }
 
     public ForestSimulator getCurrentSimulation() {

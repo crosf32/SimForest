@@ -1,6 +1,5 @@
 package fr.crosf32.fxtest.entity;
 
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 public class Forest extends Grid<Vegetal> {
@@ -14,12 +13,7 @@ public class Forest extends Grid<Vegetal> {
             String row = "";
             for(int y = 0; y < getHeight(); y++) {
                 Vegetal veg = getCell(x, y);
-                if(veg.getSpecificState() != SpecificState.NONE) {
-                    row += veg.getSpecificState().getDisplayNumber() + " ";
-                } else {
-                    row += veg.getState().getDisplayNumber() + " ";
-                }
-
+                row += veg.getState().getDisplayNumber() + " ";
             }
             table += row + " \n";
         }
@@ -28,22 +22,23 @@ public class Forest extends Grid<Vegetal> {
     }
 
     public void setCell(int row, int col, VegetalState state) {
-        super.setCell(new Vegetal(row, col).setState(state).setLastState(state));
-    }
-
-    public void setCell(int row, int col, VegetalState state, SpecificState specificState) {
-        super.setCell(new Vegetal(row, col).setState(state).setLastState(state).setSpecificState(specificState).setLastSpecificState(specificState));
+        super.getCell(row, col).setState(state).setLastState(state).paint();
     }
 
     public void calcNeighours() {
-        getCells().forEach(vegetal -> {
-            vegetal.setNeighbours(getAllNeighbours(vegetal));
-        });
+        getCells().forEach(vegetal -> vegetal.setNeighbours(getAllNeighbours(vegetal)));
     }
 
     public Vegetal getCell(int row, int col) {
         if(row < getWidth() && col < getHeight()) {
             return super.getCell(row, col);
         } else return null;
+    }
+
+    public void resetGrid() {
+        getCells().stream().forEach(vegetal -> {
+            vegetal.setState(VegetalState.EMPTY).setLastState(VegetalState.EMPTY);
+            vegetal.paint();
+        });
     }
 }

@@ -2,11 +2,10 @@ package fr.crosf32.fxtest.handler;
 
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.propagation.BugPropagation;
 import fr.crosf32.fxtest.propagation.FirePropagation;
 import fr.crosf32.fxtest.propagation.GrowingPropagation;
-import fr.crosf32.fxtest.window.WindowForestUpdatable;
+import fr.crosf32.fxtest.window.WindowUpdatable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,7 +14,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class ForestSimulator {
@@ -63,16 +61,18 @@ public class ForestSimulator {
         }
     }
 
-    public <T extends WindowForestUpdatable> void launchSimulation(T clazz) {
+    public <T extends WindowUpdatable> void launchSimulation(T clazz) {
         if(delay != 0) {
             Runnable r = () -> {
-                Set<Vegetal> updated = calculate();
-                if(updated.size() == 0) executorService.shutdown();
-                clazz.updateCells(updated);
-                time++;
                 if(time >= maxTime || cancelled) {
                     executorService.shutdown();
+                    return;
                 }
+                Set<Vegetal> updated = calculate();
+                if(updated.size() == 0) executorService.shutdown();
+                clazz.updateTimer((time+1));
+                clazz.updateCells(updated);
+                time++;
             };
 
             executorService.scheduleWithFixedDelay(r, 0, delay, TimeUnit.SECONDS);
@@ -81,9 +81,13 @@ public class ForestSimulator {
             for(int i = 0; i < maxTime; i++) {
                 Set<Vegetal> localUpdated = calculate();
                 updated.addAll(localUpdated);
+                if(updated.size() == 0) executorService.shutdown();
+                time = i;
             }
+            clazz.updateTimer((time+1));
             clazz.updateCells(updated);
         }
+
         time = 0;
     }
 
@@ -99,7 +103,7 @@ public class ForestSimulator {
         int tree = 0;
 
         for(Vegetal vegetal : forest.getCells()) {
-            if(vegetal.getSpecificState() != SpecificState.NONE) {
+            if(vegetal.getState().getRiskOfFire() == -1) {
                 continue;
             }
 

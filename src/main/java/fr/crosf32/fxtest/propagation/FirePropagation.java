@@ -1,7 +1,6 @@
 package fr.crosf32.fxtest.propagation;
 
 import fr.crosf32.fxtest.entity.Vegetal;
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.util.Random;
@@ -14,21 +13,20 @@ public class FirePropagation implements Propagable {
         Set<Vegetal> neighbours = c.getNeighbours();
 
         int probability = c.getState().getRiskOfFire();
-        int firedNeighbours = getNumberOfNeighboursWith(neighbours, SpecificState.FIRE);
+        int firedNeighbours = getNumberOfNeighboursWith(neighbours, VegetalState.FIRE);
 
-        if(firedNeighbours >= 1 && c.getLastState() != VegetalState.EMPTY && c.getLastSpecificState() == SpecificState.NONE) {
+        if(firedNeighbours >= 1 && c.getState().getRiskOfFire() != -1) { // pas un specific && fired >= 1
            int rand = new Random().nextInt(100);
 
            if(rand <= probability) {
-               c.setSpecificState(SpecificState.FIRE);
+               c.setState(VegetalState.FIRE);
            }
         } else {
-            switch(c.getSpecificState()) {
+            switch(c.getState()) {
                 case FIRE:
-                    c.setSpecificState(SpecificState.ASH);
+                    c.setState(VegetalState.ASH);
                     break;
                 case ASH:
-                    c.setSpecificState(SpecificState.NONE);
                     c.setState(VegetalState.EMPTY);
                     break;
             }
