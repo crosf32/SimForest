@@ -41,7 +41,7 @@ public class SlimForest {
             int num = (handler.getNumberOfConfigs().get()+1);
             handler.saveConfig(num, delay, maxTime, width, height, f);
         } catch(Exception e) {
-
+            System.out.println("Error save new config");
         }
     }
 

@@ -22,6 +22,7 @@ public class CsvForestGenerator {
             writer.close();
             Desktop.getDesktop().open((new File("./")));
         } catch(Exception e) {
+            System.out.println(e.getMessage());
             System.out.println("Impossible de générer le csv");
         }
     }

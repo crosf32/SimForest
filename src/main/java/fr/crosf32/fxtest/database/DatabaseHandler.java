@@ -3,7 +3,6 @@ package fr.crosf32.fxtest.database;
 import fr.crosf32.fxtest.entity.Config;
 import fr.crosf32.fxtest.entity.Forest;
 import fr.crosf32.fxtest.entity.Vegetal;
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.sql.Connection;
@@ -13,10 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class DatabaseHandler {
 
@@ -30,74 +27,13 @@ public class DatabaseHandler {
     public void updateConfig(int num, int delay, int maxTime, int width, int height, Forest f) {
         updateConfigParameters(num, delay, maxTime, width, height);
         destroyCells(num);
-        f.getCells().stream().filter(vegetal -> vegetal.getState() != VegetalState.EMPTY || vegetal.getSpecificState() != SpecificState.NONE).forEach(vegetal -> saveCell(num, vegetal));
+        f.getCells().stream().filter(vegetal -> vegetal.getState() != VegetalState.EMPTY).forEach(vegetal -> saveCell(num, vegetal));
     }
-
-    public CompletableFuture<Void> destroyCells(int num) {
-        return makeFuture(() -> {
-            try (Connection connection = connector.getConnection()) {
-                try (PreparedStatement ps = connection.prepareStatement("DELETE FROM cell WHERE cell.num = ?")) {
-                    ps.setInt(1, num);
-
-                    ps.execute();
-                }
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-    });
-}
 
     public void saveConfig(int num, int delay, int maxTime, int width, int height, Forest f) {
         saveConfigParameters(delay, maxTime, width, height);
-        f.getCells().stream().filter(vegetal -> vegetal.getState() != VegetalState.EMPTY || vegetal.getSpecificState() != SpecificState.NONE).forEach(vegetal -> saveCell(num, vegetal));
+        f.getCells().stream().filter(vegetal -> vegetal.getState() != VegetalState.EMPTY).forEach(vegetal -> saveCell(num, vegetal));
     }
-
-    public CompletableFuture<Void> saveCell(int num, Vegetal cell) {
-        return makeFuture(() -> {
-            try (Connection connection = connector.getConnection()) {
-                try (PreparedStatement ps = connection.prepareStatement("INSERT INTO cell VALUES (?, ?, ?, ?, ?)")) {
-                    ps.setInt(1, num);
-                    ps.setInt(2, cell.getRow());
-                    ps.setInt(3, cell.getCol());
-                    ps.setInt(4, cell.getState().ordinal());
-                    ps.setInt(5, cell.getSpecificState().ordinal());
-
-                    ps.execute();
-                }
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public CompletableFuture<Void> saveConfigParameters( int delay, int maxTime, int width, int height) {
-        return makeFuture(() -> {
-            try (Connection connection = connector.getConnection()) {
-                try (PreparedStatement ps = connection.prepareStatement("INSERT INTO config (delay, maxtime, width, height) VALUES (?, ?, ?, ?)")) {
-                    ps.setInt(1, delay);
-                    ps.setInt(2, maxTime);
-                    ps.setInt(3, width);
-                    ps.setInt(4, height);
-                    ps.execute();
-                }
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    public CompletableFuture<Void> updateConfigParameters(int num, int delay, int maxTime, int width, int height) {
-        return makeFuture(() -> {
-            try (Connection connection = connector.getConnection()) {
-                 PreparedStatement ps = getPreparedConfigStatement(connection, "UPDATE config SET `delay` = ?, `maxtime` = ?, `width` = ?, `height` = ? WHERE config.num = ?", delay, maxTime, width, height, num);
-                    if(ps != null) {
-                        ps.execute();
-                    }
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-        });
-    };
 
     private PreparedStatement getPreparedConfigStatement(Connection connection, String sql, int delay, int maxTime, int width, int height, int num) {
         PreparedStatement ps = null;
@@ -138,13 +74,13 @@ public class DatabaseHandler {
     public CompletableFuture<Optional<List<Vegetal>>> getVegetalsFromConfig(int num) {
         return makeFuture(() -> {
             try (Connection connection = connector.getConnection()) {
-                try (PreparedStatement ps = connection.prepareStatement("SELECT c.num, c.row, c.col, c.state, c.specificState FROM cell as c WHERE c.num = ?")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT c.num, c.row, c.col, c.state FROM cell as c WHERE c.num = ?")) {
                     ps.setInt(1, num);
                     try (ResultSet rs = ps.executeQuery()) {
                         List<Vegetal> vegetals = new ArrayList<>();
 
                         while(rs.next()) {
-                            Vegetal veg = new Vegetal(rs.getInt(2), rs.getInt(3)).setState(VegetalState.values()[rs.getInt(4)]).setSpecificState(SpecificState.values()[rs.getInt(5)]);
+                            Vegetal veg = new Vegetal(rs.getInt(2), rs.getInt(3)).setState(VegetalState.values()[rs.getInt(4)]);
                             vegetals.add(veg);
                         }
                         return Optional.of(vegetals);
@@ -176,33 +112,6 @@ public class DatabaseHandler {
         });
     }
 
-
-   /* public CompletableFuture<Optional<HashMap<Integer, >>> getArticles() {
-        return makeFuture(() -> {
-            try (Connection connection = connector.getConnection()) {
-                try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM `article`")) {
-
-                    try (ResultSet rs = ps.executeQuery()) {
-
-                        List<Order> articles = new ArrayList<>();
-
-                        while(rs.next()) {
-                            int id = rs.getInt("id");
-                            String name = rs.getString("name");
-                            int price = rs.getInt("price");
-
-                            articles.add(new Order());
-                        }
-                        rs.close();
-                        return Optional.of(articles);
-                    }
-                }
-            } catch(Exception e) {
-                e.printStackTrace();
-                return Optional.empty();
-            }
-        });
-    }*/
 
 
     private <T> CompletableFuture<T> makeFuture(Callable<T> supplier) {
@@ -239,6 +148,66 @@ public class DatabaseHandler {
         public Thread newThread(Runnable runnable) {
             return new Thread(runnable, "fr.crosf32.fxtest.entity.database-" + count.getAndIncrement());
         }
+    }
+
+
+    private CompletableFuture<Void> saveConfigParameters(int delay, int maxTime, int width, int height) {
+        return makeFuture(() -> {
+            try (Connection connection = connector.getConnection()) {
+                try (PreparedStatement ps = connection.prepareStatement("INSERT INTO config (delay, maxtime, width, height) VALUES (?, ?, ?, ?)")) {
+                    ps.setInt(1, delay);
+                    ps.setInt(2, maxTime);
+                    ps.setInt(3, width);
+                    ps.setInt(4, height);
+                    ps.execute();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private CompletableFuture<Void> updateConfigParameters(int num, int delay, int maxTime, int width, int height) {
+        return makeFuture(() -> {
+            try (Connection connection = connector.getConnection()) {
+                PreparedStatement ps = getPreparedConfigStatement(connection, "UPDATE config SET `delay` = ?, `maxtime` = ?, `width` = ?, `height` = ? WHERE config.num = ?", delay, maxTime, width, height, num);
+                if(ps != null) {
+                    ps.execute();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    private CompletableFuture<Void> saveCell(int num, Vegetal cell) {
+        return makeFuture(() -> {
+            try (Connection connection = connector.getConnection()) {
+                try (PreparedStatement ps = connection.prepareStatement("INSERT INTO cell VALUES (?, ?, ?, ?)")) {
+                    ps.setInt(1, num);
+                    ps.setInt(2, cell.getRow());
+                    ps.setInt(3, cell.getCol());
+                    ps.setInt(4, cell.getState().ordinal());
+
+                    ps.execute();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private CompletableFuture<Void> destroyCells(int num) {
+        return makeFuture(() -> {
+            try (Connection connection = connector.getConnection()) {
+                try (PreparedStatement ps = connection.prepareStatement("DELETE FROM cell WHERE cell.num = ?")) {
+                    ps.setInt(1, num);
+
+                    ps.execute();
+                }
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public interface ThrowingRunnable {

@@ -1,7 +1,6 @@
 package fr.crosf32.fxtest.propagation;
 
 import fr.crosf32.fxtest.entity.Vegetal;
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.util.Random;
@@ -14,19 +13,18 @@ public class BugPropagation implements Propagable {
     public void propagate(Vegetal c) {
         Set<Vegetal> neighbours = getDirectNeighbours(c);
 
-        int infectedNeighbours = getNumberOfNeighboursWith(neighbours, SpecificState.INFECTED);
+        int infectedNeighbours = getNumberOfNeighboursWith(neighbours, VegetalState.INFECTED);
 
-        if(c.getSpecificState() == SpecificState.INFECTED) {
-            c.setSpecificState(SpecificState.NONE);
+        if(c.getState() == VegetalState.INFECTED) {
             c.setState(VegetalState.EMPTY);
         } else {
-            if(infectedNeighbours >= 1 && c.getSpecificState() == SpecificState.NONE) {
+            if(infectedNeighbours >= 1 && c.getState().getRiskOfFire() != -1) {
                 int probability = c.getLastState().getRiskOfInfection();
 
                 int rand = new Random().nextInt(100);
 
                 if(rand <= probability) {
-                    c.setSpecificState(SpecificState.INFECTED);
+                    c.setState(VegetalState.INFECTED);
                 }
             }
         }

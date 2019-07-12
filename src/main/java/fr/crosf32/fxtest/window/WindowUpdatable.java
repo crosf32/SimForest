@@ -4,7 +4,6 @@ import fr.crosf32.fxtest.entity.Vegetal;
 
 import java.util.Set;
 
-public interface WindowForestUpdatable {
-
-    void updateCells(Set<Vegetal> vegetal);
+public interface WindowUpdatable {
+    void updateCells(Set<Vegetal> vegetals);
 }

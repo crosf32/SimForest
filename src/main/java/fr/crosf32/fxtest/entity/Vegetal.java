@@ -1,18 +1,13 @@
 package fr.crosf32.fxtest.entity;
 
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
 
 import java.util.Set;
 
-    public  class Vegetal extends Cell  {
+public  class Vegetal extends Cell {
 
     private VegetalState state = VegetalState.EMPTY;
     private VegetalState lastState = VegetalState.EMPTY;
-
-    // TODO : Check utility
-    private SpecificState specificState = SpecificState.NONE;
-    private SpecificState lastSpecificState = SpecificState.NONE;
 
     private Set<Vegetal> neighbours;
 
@@ -30,22 +25,20 @@ import java.util.Set;
         return this;
     }
 
-    public String getColor() {
-        if(getSpecificState() != SpecificState.NONE) {
-            return getSpecificState().getColor();
-        } else {
-            return getState().getColor();
+    public void paint() {
+        super.setStyle("-fx-background-color: " + getColor());
+    }
+
+    public boolean updateState() {
+        if(this.getState() != this.getLastState()) {
+            this.setLastState(getState());
+            return true;
         }
+        return false;
     }
 
-    public SpecificState getSpecificState() {
-        return specificState;
-    }
-
-    public Vegetal setSpecificState(SpecificState specificState) {
-        setLastSpecificState(this.specificState);
-        this.specificState = specificState;
-        return this;
+    public String getColor() {
+        return getState().getColor();
     }
 
     public Set<Vegetal> getNeighbours() {
@@ -63,23 +56,5 @@ import java.util.Set;
     public Vegetal setLastState(VegetalState lastState) {
         this.lastState = lastState;
         return this;
-    }
-
-    public SpecificState getLastSpecificState() {
-        return lastSpecificState;
-    }
-
-    public Vegetal setLastSpecificState(SpecificState lastSpecificState) {
-        this.lastSpecificState = lastSpecificState;
-        return this;
-    }
-
-    public boolean updateState() {
-        if(this.getLastSpecificState() != this.getSpecificState() || this.getState() != this.getLastState()) {
-            this.setLastState(getState());
-            this.setLastSpecificState(getSpecificState());
-            return true;
-        }
-        return false;
     }
 }
