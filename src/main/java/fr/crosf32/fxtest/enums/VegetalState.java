@@ -5,7 +5,10 @@ public enum VegetalState {
     YOUNG("1", 25, 75, "#06FF15"),
     SHRUB("2", 50, 50, "#01AE0C"),
     BEFORE_TREE("2", 50, 50, "#01AE0C"),
-    TREE("4", 75, 25, "#025207");
+    TREE("4", 75, 25, "#025207"),
+    FIRE("5", -1, -1, "FF0000"),
+    ASH("6", -1, -1, "#99938F"),
+    INFECTED("7", -1, -1, "#FBFF00");
 
     private String displayNumber, color;
     private int riskOfFire, riskOfInfection;
@@ -32,9 +35,4 @@ public enum VegetalState {
     public String getColor() {
         return color;
     }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-    // TODO : Add percentages
 }

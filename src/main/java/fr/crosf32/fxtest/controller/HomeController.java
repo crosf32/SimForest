@@ -2,6 +2,7 @@ package fr.crosf32.fxtest.controller;
 
 import fr.crosf32.fxtest.SlimForest;
 import fr.crosf32.fxtest.database.DatabaseHandler;
+import fr.crosf32.fxtest.utils.IntegerUtils;
 import fr.crosf32.fxtest.utils.WindowDialogUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -49,7 +50,7 @@ public class HomeController {
         Platform.runLater(() -> {
             errorText.setText("");
 
-            SlimForest.getInstance().getFxWindowManager().openMainWindow(getIntegerFromString(nbrCol.getText()), getIntegerFromString(nbrRow.getText()), random);
+            SlimForest.getInstance().getFxWindowManager().openMainWindow(IntegerUtils.getSafeInt(nbrCol.getText()), IntegerUtils.getSafeInt(nbrRow.getText()), random);
         });
 
     }
@@ -79,9 +80,10 @@ public class HomeController {
     }
 
     private void openChooseConfigNumber(int max) {
+        System.out.println("ok la");
         Dialog<String> dialog = WindowDialogUtils.getConfigNumberDialog(max);
         Optional<String> result = dialog.showAndWait();
-        result.ifPresent(s -> SlimForest.getInstance().getFxWindowManager().openMainWindowFromDatabase(getIntegerFromString(s)));
+        result.ifPresent(s -> SlimForest.getInstance().getFxWindowManager().openMainWindowFromDatabase(IntegerUtils.getSafeInt(s)));
     }
 
     private boolean inputAreGood() {
@@ -91,9 +93,9 @@ public class HomeController {
         if(colText.length() == 0 || rowText.length() == 0 || !isInteger(colText) || !isInteger(rowText) ) {
           return false;
         } else {
-            int rowInt = getIntegerFromString(colText);
-            int colInt = getIntegerFromString(rowText);
-            if(rowInt < 3 || colInt < 3 || rowInt > 150 || colInt > 150) {
+            int rowInt = IntegerUtils.getSafeInt(colText);
+            int colInt = IntegerUtils.getSafeInt(rowText);
+            if(rowInt < 3 || colInt < 3 || rowInt > 250 || colInt > 250) {
                 return false;
             }
         }
@@ -102,14 +104,6 @@ public class HomeController {
     }
 
     private boolean isInteger(String s) {
-        return getIntegerFromString(s) != -1;
-    }
-
-    private int getIntegerFromString(String s) {
-        try {
-            return Integer.valueOf(s);
-        } catch(Exception e) {
-            return -1;
-        }
+        return IntegerUtils.getSafeInt(s) != -1;
     }
 }

@@ -1,10 +1,7 @@
 package fr.crosf32.fxtest.handler;
 
 import fr.crosf32.fxtest.entity.Forest;
-import fr.crosf32.fxtest.entity.Vegetal;
-import fr.crosf32.fxtest.enums.SpecificState;
 import fr.crosf32.fxtest.enums.VegetalState;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,10 +46,10 @@ class ForestSimulatorTest {
     void infectPropagation() {
 
         Forest f = new ForestBuilder()
-                .setAt(2, 4, VegetalState.TREE, SpecificState.INFECTED)
+                .setAt(2, 4, VegetalState.TREE)
                 .get();
 
-        assertEquals(f.getCell(2, 4).getSpecificState(), SpecificState.INFECTED);
+        assertEquals(f.getCell(2, 4).getState(), VegetalState.INFECTED);
         ForestSimulator forestSimulator = new ForestSimulator(f);
         forestSimulator.setMaxTime(1).setDelay(0).launchSimulation();
         assertEquals(f.getCell(2, 4).getState(), VegetalState.EMPTY);
@@ -76,9 +73,9 @@ class ForestSimulatorTest {
                 ForestBuilder fb = new ForestBuilder()
                         .setAt(2, 3, state);
                 if(fire) {
-                    fb.setAt(2, 4, VegetalState.TREE, SpecificState.FIRE);
+                    fb.setAt(2, 4, VegetalState.FIRE);
                 } else {
-                    fb.setAt(2, 4, VegetalState.TREE, SpecificState.INFECTED);
+                    fb.setAt(2, 4, VegetalState.INFECTED);
                 }
 
                 Forest f = fb.get();
@@ -86,11 +83,9 @@ class ForestSimulatorTest {
                 ForestSimulator forestSimulator = new ForestSimulator(f);
                 forestSimulator.setMaxTime(1).setDelay(0).launchSimulation();
 
-                if ((fire && f.getCell(2, 3).getSpecificState() == SpecificState.FIRE) || f.getCell(2, 3).getSpecificState() == SpecificState.INFECTED) {
+                if ((fire && f.getCell(2, 3).getState() == VegetalState.FIRE) || f.getCell(2, 3).getState() == VegetalState.INFECTED) {
                     nbrFire++;
                 }
-
-
             }
 
             if(fire) {
@@ -108,13 +103,13 @@ class ForestSimulatorTest {
     void firePropagation () {
 
         Forest f = new ForestBuilder()
-                .setAt(2, 4, VegetalState.TREE, SpecificState.FIRE)
+                .setAt(2, 4, VegetalState.FIRE)
                 .get();
 
-        assertEquals(f.getCell(2, 4).getSpecificState(), SpecificState.FIRE);
+        assertEquals(f.getCell(2, 4).getState(), VegetalState.FIRE);
         ForestSimulator forestSimulator = new ForestSimulator(f);
         forestSimulator.setMaxTime(1).setDelay(0).launchSimulation();
-        assertEquals(f.getCell(2, 4).getSpecificState(), SpecificState.ASH);
+        assertEquals(f.getCell(2, 4).getState(), VegetalState.ASH);
         forestSimulator.launchSimulation();
         assertEquals(f.getCell(2, 4).getState(), VegetalState.EMPTY);
     }

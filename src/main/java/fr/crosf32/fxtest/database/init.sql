@@ -4,7 +4,6 @@ CREATE TABLE IF NOT EXISTS `cell` (
   `row` int(3) NOT NULL,
   `col` int(3) NOT NULL,
   `state` int(1) NOT NULL,
-  `specificState` int(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `config`;
