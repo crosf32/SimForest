@@ -51,25 +51,12 @@ class ForestSimulatorTest {
         checkProba(VegetalState.SHRUB, false);
         checkProba(VegetalState.YOUNG, false);
     }
+
     @Test
     void fireSimulation() {
         checkProba(VegetalState.TREE, true);
         checkProba(VegetalState.SHRUB, true);
         checkProba(VegetalState.YOUNG, true);
-    }
-
-    @Test
-    void firePropagation () {
-        Forest f = new ForestBuilder()
-                .setAt(2, 4, VegetalState.FIRE)
-                .get();
-
-        assertEquals(f.getCell(2, 4).getState(), VegetalState.FIRE);
-        ForestSimulator forestSimulator = new ForestSimulator(f);
-        forestSimulator.setMaxTime(1).setDelay(0).launchSimulation();
-        assertEquals(f.getCell(2, 4).getState(), VegetalState.ASH);
-        forestSimulator.launchSimulation();
-        assertEquals(f.getCell(2, 4).getState(), VegetalState.EMPTY);
     }
 
     private void checkProba(VegetalState state, boolean fire) {
@@ -106,19 +93,5 @@ class ForestSimulatorTest {
 
         }
         assertTrue(nbrTestTrue >= 90);
-    }
-    @Test
-    void firePropagation () {
-
-        Forest f = new ForestBuilder()
-                .setAt(2, 4, VegetalState.TREE, SpecificState.FIRE)
-                .get();
-
-        assertEquals(f.getCell(2, 4).getSpecificState(), SpecificState.FIRE);
-        ForestSimulator forestSimulator = new ForestSimulator(f);
-        forestSimulator.setMaxTime(1).setDelay(0).launchSimulation();
-        assertEquals(f.getCell(2, 4).getSpecificState(), SpecificState.ASH);
-        forestSimulator.launchSimulation();
-        assertEquals(f.getCell(2, 4).getState(), VegetalState.EMPTY);
     }
 }

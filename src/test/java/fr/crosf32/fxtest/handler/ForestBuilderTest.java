@@ -10,8 +10,23 @@ class ForestBuilderTest {
     Forest f;
 
     @Test
+    void reset() {
+        f = new ForestBuilder().randomGeneration().get();
+        f.resetGrid();
+
+        int trees = getNumberByState(VegetalState.TREE);
+        int shrub = getNumberByState(VegetalState.SHRUB);
+        int young = getNumberByState(VegetalState.YOUNG);
+        int fire = getNumberByState(VegetalState.FIRE);
+        int infected = getNumberByState(VegetalState.INFECTED);
+
+        assertEquals((trees+shrub+young+fire+infected), 0);
+    }
+
+    @Test
     void randomGeneration() {
         f = new ForestBuilder().randomGeneration().get();
+
         int trees = getNumberByState(VegetalState.TREE);
         int shrub = getNumberByState(VegetalState.SHRUB);
         int young = getNumberByState(VegetalState.YOUNG);
