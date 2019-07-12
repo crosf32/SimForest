@@ -21,7 +21,7 @@ public class ForestSimulator {
     private int time = 0;
     private int maxTime, delay;
     private boolean cancelled = false;
-    private List<String[]> stats = new ArrayList<>();
+    private List<String[]> stats;
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
@@ -34,18 +34,18 @@ public class ForestSimulator {
         this.growingPropagation = new GrowingPropagation();
         this.firePropagation = new FirePropagation();
         this.bugPropagation = new BugPropagation();
-        stats.add(new String[]{"Jeune pousse", "Arbuste", "Arbre", "Vide"});
+        this.stats = new ArrayList<>();
+        this.stats.add(new String[]{"Jeune pousse", "Arbuste", "Arbre", "Vide", "Feu", "Infecte"});
     }
 
-    public void displayForConsole() {
+    private void displayForConsole() {
         this.forest.displayForConsole();
     }
 
-    public void launchSimulation() {
+    void launchSimulation() {
         if(delay != 0) {
             Runnable r = () -> {
-                calculate();
-                displayForConsole();
+                compute();
                 time++;
                 if(time >= maxTime || cancelled) {
                     executorService.shutdown();
@@ -55,8 +55,8 @@ public class ForestSimulator {
             executorService.scheduleWithFixedDelay(r, 0, delay, TimeUnit.SECONDS);
         } else {
             for(int i = 0; i < maxTime; i++) {
-                calculate();
-                displayForConsole();
+                compute();
+                time = i;
             }
         }
     }
@@ -65,12 +65,15 @@ public class ForestSimulator {
         if(delay != 0) {
             Runnable r = () -> {
                 if(time >= maxTime || cancelled) {
+                    cancelled = true;
                     executorService.shutdown();
                     return;
                 }
-                Set<Vegetal> updated = calculate();
-                if(updated.size() == 0) executorService.shutdown();
-                clazz.updateTimer((time+1));
+                Set<Vegetal> updated = compute();
+                if(updated.size() == 0) {
+                    cancelled = true;
+                    executorService.shutdown();
+                }
                 clazz.updateCells(updated);
                 time++;
             };
@@ -79,34 +82,43 @@ public class ForestSimulator {
         } else {
             Set<Vegetal> updated = new HashSet<>();
             for(int i = 0; i < maxTime; i++) {
-                Set<Vegetal> localUpdated = calculate();
+                Set<Vegetal> localUpdated = compute();
                 updated.addAll(localUpdated);
                 if(updated.size() == 0) executorService.shutdown();
                 time = i;
             }
-            clazz.updateTimer((time+1));
             clazz.updateCells(updated);
+            cancelled = true;
         }
 
         time = 0;
     }
 
-    public ForestSimulator setMaxTime(int maxTime) {
-        this.maxTime = maxTime;
-        return this;
+    public void addStats(List<String[]> stats) {
+        this.stats.addAll(stats);
     }
 
-    public void computeCsv() {
+    private Set<Vegetal> compute() {
+        forest.getCells().forEach(vegetal -> {
+            firePropagation.propagate(vegetal);
+            bugPropagation.propagate(vegetal);
+            growingPropagation.propagate(vegetal);
+        });
+
+        computeCsv();
+
+        return forest.getCells().stream().filter(Vegetal::updateState).collect(Collectors.toSet());
+    }
+
+    private void computeCsv() {
         int empty = 0;
         int young = 0;
         int shrub = 0;
         int tree = 0;
+        int fire = 0;
+        int infected = 0;
 
         for(Vegetal vegetal : forest.getCells()) {
-            if(vegetal.getState().getRiskOfFire() == -1) {
-                continue;
-            }
-
             switch(vegetal.getState()) {
                 case EMPTY:
                     empty++;
@@ -123,43 +135,24 @@ public class ForestSimulator {
                 case BEFORE_TREE:
                     shrub++;
                     break;
+                case FIRE:
+                    fire++;
+                    break;
+                case INFECTED:
+                    infected++;
+                    break;
             }
         }
 
-        int max = young + shrub + tree + empty;
+        int max = young + shrub + tree + empty + fire + infected;
 
-        String[] strings = new String[]{(young*100/max) + "%", (shrub*100/max) + "%", (tree*100/max) + "%", (empty*100/max) +"%"};
+        String[] strings = new String[]{getPercent(young, max), getPercent(shrub, max), getPercent(tree, max), getPercent(empty, max), getPercent(fire, max), getPercent(infected, max)};
         stats.add(strings);
     }
 
-    public ForestSimulator setTime(int time) {
-        this.time = time;
-        return this;
-    }
-
-    public ForestSimulator setDelay(int delay) {
-        this.delay = delay;
-        return this;
-    }
-
-    public Set<Vegetal> calculate() {
-        forest.getCells().forEach(vegetal -> {
-            firePropagation.propagate(vegetal);
-            bugPropagation.propagate(vegetal);
-            growingPropagation.propagate(vegetal);
-        });
-
-        computeCsv();
-
-        return forest.getCells().stream().filter(Vegetal::updateState).collect(Collectors.toSet());
-    }
-
-    public FirePropagation getFirePropagation() {
-        return firePropagation;
-    }
-
-    public BugPropagation getBugPropagation() {
-        return bugPropagation;
+    private String getPercent(int number, int max) {
+        double i = Math.round(((double) number/max) * 100.0) / 100.0;
+        return String.valueOf(i);
     }
 
     public boolean isCancelled() {
@@ -170,11 +163,25 @@ public class ForestSimulator {
         this.cancelled = cancelled;
     }
 
-    public List<String[]> getStats() {
-        return stats;
+    public ForestSimulator setMaxTime(int maxTime) {
+        this.maxTime = maxTime;
+        return this;
     }
 
-    public void setStats(List<String[]> stats) {
-        this.stats = stats;
+    public ForestSimulator setDelay(int delay) {
+        this.delay = delay;
+        return this;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public List<String[]> getStats() {
+        return stats;
     }
 }

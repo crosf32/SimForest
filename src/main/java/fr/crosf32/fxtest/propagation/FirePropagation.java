@@ -15,7 +15,7 @@ public class FirePropagation implements Propagable {
         int probability = c.getState().getRiskOfFire();
         int firedNeighbours = getNumberOfNeighboursWith(neighbours, VegetalState.FIRE);
 
-        if(firedNeighbours >= 1 && c.getState().getRiskOfFire() != -1) { // pas un specific && fired >= 1
+        if(firedNeighbours >= 1 && c.getState().getRiskOfFire() != -1) {
            int rand = new Random().nextInt(100);
 
            if(rand <= probability) {

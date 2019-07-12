@@ -22,6 +22,7 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 public class MainController implements WindowUpdatable {
 
@@ -51,16 +52,6 @@ public class MainController implements WindowUpdatable {
     private ForestSimulator currentSimulation;
 
     private int frameCounter = 0;
-
-    public void nextStep() {
-        ForestSimulator forestSimulator = buildForestSimulator();
-
-        if(forestSimulator != null && frameCounter < IntegerUtils.getSafeInt(maxTimeInput.getText())) {
-            forestSimulator.setDelay(1).setMaxTime(1);
-            Platform.runLater(() -> forestSimulator.launchSimulation(this));
-            currentSimulation = forestSimulator;
-        }
-    }
 
     public void backToMenu() {
         SlimForest.getInstance().getFxWindowManager().openMenu();
@@ -146,6 +137,8 @@ public class MainController implements WindowUpdatable {
         this.chosenVegetal = VegetalState.INFECTED;
     }
 
+    private boolean isStepByStep = false;
+
     public void reset() {
         frameCount.setText("");
         frameCounter = 0;
@@ -220,18 +213,22 @@ public class MainController implements WindowUpdatable {
             int clicked = IntegerUtils.getSafeInt(dialog.getSelectedItem());
             if (clicked != -1) {
                 SlimForest.getInstance().saveConfig(clicked, getSafeFromInput(delayInput), getSafeFromInput(maxTimeInput), width, height, forest);
-                alert("La configuration a bien été sauvegardée");
+                success("La configuration a bien été sauvegardée");
                 return;
             }
         }
 
         SlimForest.getInstance().saveNewConfig(getSafeFromInput(delayInput), getSafeFromInput(maxTimeInput), width, height, forest);
-        alert("La configuration a bien été sauvegardée");
+        success("La configuration a bien été sauvegardée");
     }
 
-    private void alert(String s) {
+    private void success(String s) {
+        shortMessage(s, true);
+    }
+
+    private void shortMessage(String s, boolean success) {
         setError(s);
-        error.setStyle("-fx-text-fill: lightgreen;");
+        if(success) error.setStyle("-fx-text-fill: lightgreen;");
         Runnable r = () -> {
             Platform.runLater(() -> setError(""));
             error.setStyle("-fx-text-fill: red;");
@@ -240,17 +237,36 @@ public class MainController implements WindowUpdatable {
         Executors.newScheduledThreadPool(1).schedule(r, 2, TimeUnit.SECONDS);
     }
 
+    private void alert(String s) {
+        shortMessage(s, false);
+    }
+
+
+    public void nextStep() {
+        ForestSimulator forestSimulator = buildForestSimulator();
+
+        if(forestSimulator != null && ((frameCounter+1) <= getSafeFromInput(maxTimeInput) || (getCurrentSimulation() != null && getCurrentSimulation().isCancelled()))) {
+            isStepByStep = true;
+            forestSimulator.setDelay(1).setMaxTime(1);
+            Platform.runLater(() -> forestSimulator.launchSimulation(this));
+            currentSimulation = forestSimulator;
+        } else {
+            alert("Le programme tourne encore");
+        }
+    }
+
     public void start() {
-        if(frameCounter >= IntegerUtils.getSafeInt(maxTimeInput.getText())) {
+        if(getCurrentSimulation() != null && !getCurrentSimulation().isCancelled() && !isStepByStep) {
+            alert("Le programme tourne encore");
             return;
         }
-
         frameCounter = 0;
 
         ForestSimulator forestSimulator = buildForestSimulator();
 
         currentSimulation = forestSimulator;
         if(forestSimulator != null) {
+            isStepByStep = false;
             try {
                 forestSimulator.launchSimulation(this);
             } catch(Exception e) {
@@ -263,11 +279,8 @@ public class MainController implements WindowUpdatable {
     @Override
     public void updateCells(Set<Vegetal> vegetals) {
         Platform.runLater(() -> vegetals.forEach(Vegetal::paint));
-    }
+        frameCounter++;
 
-    @Override
-    public void updateTimer(int time) {
-        frameCounter = time;
         displayFrameCount();
     }
 
@@ -290,11 +303,11 @@ public class MainController implements WindowUpdatable {
     private ForestSimulator buildForestSimulator() {
         ForestSimulator forestSimulator = new ForestSimulator(getForestBuilder().get());
         List<String[]> stats = new ArrayList<>();
-        stats.add(new String[]{"Jeune pousse", "Arbuste", "Arbre", "Vide"});
         if(getCurrentSimulation()!= null) {
             stats = getCurrentSimulation().getStats();
+            stats.remove(0);
         }
-        forestSimulator.setStats(stats);
+        forestSimulator.addStats(stats);
         if(frameCounter != 0) {
             forestSimulator.setTime(frameCounter);
         }
@@ -326,7 +339,13 @@ public class MainController implements WindowUpdatable {
     }
 
     private void displayFrameCount() {
-        Platform.runLater(() -> frameCount.setText(frameCounter + " / " + maxTimeInput.getText()));
+        Platform.runLater(() -> {
+            int max = getSafeFromInput(maxTimeInput);
+            if(frameCounter > max) {
+                maxTimeInput.setText(String.valueOf(frameCounter));
+            }
+            frameCount.setText(frameCounter + " / " + maxTimeInput.getText());
+        });
     }
 
     public ForestSimulator getCurrentSimulation() {
