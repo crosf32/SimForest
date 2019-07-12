@@ -22,6 +22,7 @@ public class ForestSimulator {
     private int maxTime, delay;
     private boolean cancelled = false;
     private List<String[]> stats;
+    private String[] lastStat;
 
     private ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
@@ -147,6 +148,7 @@ public class ForestSimulator {
         int max = young + shrub + tree + empty + fire + infected;
 
         String[] strings = new String[]{getPercent(young, max), getPercent(shrub, max), getPercent(tree, max), getPercent(empty, max), getPercent(fire, max), getPercent(infected, max)};
+        this.lastStat = strings;
         stats.add(strings);
     }
 
@@ -183,5 +185,9 @@ public class ForestSimulator {
 
     public List<String[]> getStats() {
         return stats;
+    }
+
+    public String[] getLastStat() {
+        return lastStat;
     }
 }

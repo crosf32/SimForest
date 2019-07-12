@@ -30,16 +30,10 @@ public class MainController implements WindowUpdatable {
     private GridPane forestGridPane;
 
     @FXML
-    private TextField delayInput;
+    private Label youngNumber, shrubNumber, treeNumber, emptyNumber, fireNumber, infectNumber, error, frameCount;
 
     @FXML
-    private TextField maxTimeInput;
-
-    @FXML
-    private Label error;
-
-    @FXML
-    private Label frameCount;
+    private TextField delayInput, maxTimeInput;
 
     private int width, height;
 
@@ -140,6 +134,7 @@ public class MainController implements WindowUpdatable {
     private boolean isStepByStep = false;
 
     public void reset() {
+        resetStats();
         frameCount.setText("");
         frameCounter = 0;
         if(getCurrentSimulation() != null) {
@@ -282,7 +277,16 @@ public class MainController implements WindowUpdatable {
 
     @Override
     public void updateCells(Set<Vegetal> vegetals) {
-        Platform.runLater(() -> vegetals.forEach(Vegetal::paint));
+        Platform.runLater(() -> {
+            vegetals.forEach(Vegetal::paint);
+            String[] stats = getCurrentSimulation().getLastStat();
+            youngNumber.setText(stats[0]);
+            shrubNumber.setText(stats[1]);
+            treeNumber.setText(stats[2]);
+            emptyNumber.setText(stats[3]);
+            fireNumber.setText(stats[4]);
+            infectNumber.setText(stats[5]);
+        });
         frameCounter++;
 
         displayFrameCount();
@@ -342,7 +346,16 @@ public class MainController implements WindowUpdatable {
         return i;
     }
 
-    private void displayFrameCount() {
+    private void resetStats() {
+        youngNumber.setText("");
+        shrubNumber.setText("");
+        treeNumber.setText("");
+        emptyNumber.setText("");
+        fireNumber.setText("");
+        infectNumber.setText("");
+    }
+
+     private void displayFrameCount() {
         Platform.runLater(() -> {
             int max = getSafeFromInput(maxTimeInput);
             if(frameCounter > max) {
