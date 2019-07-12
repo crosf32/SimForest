@@ -7,13 +7,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Grid<T extends Cell> {
+public abstract class Grid<T extends Cell> {
     private T[][] cells;
     private int width, height;
+    abstract Set<T> getAllNeighbours(T c);
 
     private Class<T> clazz;
 
-    public Grid(Class<T> clazz, int width, int height) {
+     Grid(Class<T> clazz, int width, int height) {
         this.clazz = clazz;
         this.width = width;
         this.height = height;
@@ -57,7 +58,7 @@ public class Grid<T extends Cell> {
         this.width = width;
     }
 
-    public Set<T> getAllNeighbours(T c) {
+    /*public Set<T> getAllNeighbours(T c) {
         Set<T> cells = new HashSet<>();
 
         for(int x = (c.getRow() - 1); x <= (c.getRow() + 1); x++) {
@@ -70,7 +71,7 @@ public class Grid<T extends Cell> {
         }
 
         return cells;
-    }
+    }*/
 
     public Set<T> getCells() {
         return Stream.of(cells).flatMap(Arrays::stream).collect(Collectors.toSet());

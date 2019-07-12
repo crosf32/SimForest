@@ -16,7 +16,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.setOnCloseRequest(event -> new Thread(() -> System.exit(0)).start());
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
 
         setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(getClass().getResource("/views/home.fxml"));
