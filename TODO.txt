@@ -1,4 +1,0 @@
-check UML
-check slides
-
-display percent
